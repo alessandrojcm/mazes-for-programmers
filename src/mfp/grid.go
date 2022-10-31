@@ -21,10 +21,10 @@ type GridHandler interface {
 	RandomCell() (*Cell, error)
 	EachRow() chan []*Cell
 	EachCell() chan *Cell
-	ToPng(cellSize int) error
+	ToImage(cellSize int) *rl.Image
 }
 
-func (g *Grid) ToPng(cellSize int) error {
+func (g *Grid) ToImage(cellSize int) *rl.Image {
 	if cellSize <= 0 {
 		cellSize = 10
 	}
@@ -49,19 +49,22 @@ func (g *Grid) ToPng(cellSize int) error {
 		}
 	}
 	rl.ImageFlipVertical(*&image)
-	rl.ExportImage(*image, "maze.png")
-	rl.UnloadImage(image)
-	return nil
+	return image
 }
 
+// There are a few edge cases
+// which I cannot quite figure out yet
+// since they'll require a cell to
+// know the boundaries of the other cells
 func (g *Grid) String() string {
-	output := "+" + strings.Repeat("----", g.columns-1) + "---+" + "\n"
+	output := "┌" + strings.Repeat("────", g.columns-1) + "───┐" + "\n"
+	index := 0
 	for row := range g.EachRow() {
-		top, bottom := "|", "b"
+		top, bottom := "│", "│"
 		for i := range row {
 			cell := row[i]
 			// three spaces
-			body, corner := " c ", "|"
+			body, corner := " c ", "─"
 			var eastBoundary, southBoundary string
 
 			if cell == nil {
@@ -73,28 +76,48 @@ func (g *Grid) String() string {
 			if cell.Linked(cell.east) {
 				eastBoundary = " "
 			} else {
-				eastBoundary = "|"
+				eastBoundary = "│"
 			}
 			top = top + body + eastBoundary
 			if cell.Linked(cell.south) {
 				southBoundary = "   "
 			} else {
-				southBoundary = "---"
+				southBoundary = "───"
 			}
-			if !cell.Linked(cell.east) && !cell.Linked(cell.south) {
-				corner = "+"
+			// special case so just short-circuit the loop
+			if index == g.rows-1 && i == 0 {
+				bottom = "└" + southBoundary + corner
+				continue
+			} else if index == g.rows-1 && i == len(row)-1 {
+				bottom = bottom + southBoundary + "┘"
+				continue
+			}
+			if cell.Linked(cell.south) && cell.Linked(cell.east) {
+				corner = "╷"
+			}
+			if !cell.Linked(cell.south) && cell.Linked(cell.east) {
+				corner = "─"
 			}
 			if cell.Linked(cell.south) && !cell.Linked(cell.east) {
-				corner = "|"
+				if index == g.rows-1 {
+					corner = "─"
+				} else if i == len(row)-1 {
+					corner = "│"
+				} else {
+					corner = "╷"
+				}
 			}
-			if cell.Linked(cell.east) && cell.Linked(cell.south) {
-				corner = "-"
+			if !cell.Linked(cell.south) && !cell.Linked(cell.east) {
+				if index == g.rows-1 {
+					corner = "┴"
+				} else {
+					corner = "│"
+				}
 			}
-			if cell.Linked(cell.east) && !cell.Linked(cell.south) {
-				corner = "-"
-			}
+
 			bottom = bottom + southBoundary + corner
 		}
+		index++
 		output = output + top + "\n" + bottom + "\n"
 	}
 	return output

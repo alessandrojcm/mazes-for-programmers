@@ -3,8 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	rl "github.com/gen2brain/raylib-go/raylib"
 	"mfp/src/mfp"
 	"runtime"
+	"time"
 )
 
 func main() {
@@ -39,6 +41,8 @@ func main() {
 	fmt.Printf("Printing %s %vx%v maze with %s bias\n", algorithm, rows, columns, bias)
 	fmt.Println(grid)
 	if export {
-		grid.ToPng(cellSize)
+		img := grid.ToImage(cellSize)
+		defer rl.UnloadImage(img)
+		rl.ExportImage(*img, fmt.Sprintf("%s-%vrowX%vcol-%s-%v.png", algorithm, rows, columns, bias, time.Now().UnixNano()))
 	}
 }
