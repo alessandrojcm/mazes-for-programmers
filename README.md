@@ -11,7 +11,7 @@ several reasons:
 thus making you think
 * It delves into graphically representing the mazes, hence a graphics library is needed. This is always fun
 * Code samples are written in Ruby, being the high-level language that it is, Ruby provides a lot of "magic" built-in
-that Go simply hasn't got. Thus, it forces us to find the most idiomatic way in Go of implementing this features; this
+that Go simply hasn't got. Thus, it forces us to find the most idiomatic way in Go of implementing these features; this
 provides a very hands-on way of getting to know the language.
 
 Code samples will be implemented pure Go, whereas for the graphics the Go bindings of [raylib](https://github.com/gen2brain/raylib-go)
