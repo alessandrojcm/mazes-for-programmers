@@ -15,7 +15,7 @@ that Go simply hasn't got. Thus, it forces us to find the most idiomatic way in 
 provides a very hands-on way of getting to know the language.
 
 Code samples will be implemented pure Go, whereas for the graphics the Go bindings of [raylib](https://github.com/gen2brain/raylib-go)
-will be used. Raylib is a simple library written in C (so it's written in a declarative way) that wraps the OpenGL API, it's made mainly to teach game development;
+will be used. Raylib is a simple library written in C (so it's written in a imperative way) that wraps the OpenGL API, it's made mainly to teach game development;
 thus its API is very simplified while at the same time providing everything that is necessary for a 2D (and even 3D) application.
 
 This module is structure like this (work in progress):
