@@ -14,7 +14,7 @@ func main() {
 	// call to be main on a single thread
 	// so block the thread to avoid crashes
 	runtime.LockOSThread()
-	var rows, columns, cellSize int
+	var rows, columns, cellSize, wallThickness int
 	var bias, algorithm string
 	var export bool
 
@@ -26,6 +26,7 @@ func main() {
 	flag.StringVar(&algorithm, "algorithm", "binarytree", "algorithm to use, options: binarytree, sidewinder")
 	flag.BoolVar(&export, "export", false, "export the maze to an image")
 	flag.IntVar(&cellSize, "cellsize", 10, "sets the size of the cells")
+	flag.IntVar(&wallThickness, "thickness", 1, "sets the thickness of the walls for the exported images")
 	flag.Parse()
 
 	grid, err := mfp.NewGrid(rows, columns)
@@ -41,7 +42,7 @@ func main() {
 	fmt.Printf("Printing %s %vx%v maze with %s bias\n", algorithm, rows, columns, bias)
 	fmt.Println(grid)
 	if export {
-		img := grid.ToImage(cellSize)
+		img := grid.ToImage(cellSize, wallThickness)
 		defer rl.UnloadImage(img)
 		rl.ExportImage(*img, fmt.Sprintf("%s-%vrowX%vcol-%s-%v.png", algorithm, rows, columns, bias, time.Now().UnixNano()))
 	}

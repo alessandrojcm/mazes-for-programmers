@@ -1,8 +1,10 @@
-github.com/alessandrojcm/raylib-go/raylib v0.0.0-20221031141958-971b4522172c h1:rQtIpo0XR3TWnmS5m2lCOlp6Y6ZXjdhG0UtNZG21tO8=
-github.com/alessandrojcm/raylib-go/raylib v0.0.0-20221031141958-971b4522172c/go.mod h1:+NbsqGlEQqGqrsgJFF5Yj2dkvn0ML2SQb8RqM2hJsPU=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/gen2brain/raylib-go/raylib v0.0.0-20221023125634-dfbb5ab75453 h1:DUUHWiodnUG1g2WCgHygGy5X+27hBkBhGxuimp+UzwM=
+github.com/gen2brain/raylib-go/raylib v0.0.0-20221023125634-dfbb5ab75453/go.mod h1:+NbsqGlEQqGqrsgJFF5Yj2dkvn0ML2SQb8RqM2hJsPU=
+github.com/gen2brain/raylib-go/raylib v0.0.0-20221031152736-892ce4892cf3 h1:4g7gj4Y0uCNPyodeKQHLDaGD8+oAnZdQXixmOBwmGao=
+github.com/gen2brain/raylib-go/raylib v0.0.0-20221031152736-892ce4892cf3/go.mod h1:+NbsqGlEQqGqrsgJFF5Yj2dkvn0ML2SQb8RqM2hJsPU=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

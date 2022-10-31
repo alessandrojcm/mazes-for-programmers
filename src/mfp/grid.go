@@ -21,18 +21,24 @@ type GridHandler interface {
 	RandomCell() (*Cell, error)
 	EachRow() chan []*Cell
 	EachCell() chan *Cell
-	ToImage(cellSize int) *rl.Image
+	ToImage(cellSize, thickness int) *rl.Image
 }
 
-func (g *Grid) ToImage(cellSize int) *rl.Image {
+// TODO: wall thickness
+// TODO: tile types? use rectangles?
+
+func (g *Grid) ToImage(cellSize, thickness int) *rl.Image {
 	if cellSize <= 0 {
 		cellSize = 10
 	}
-	width, height := cellSize*g.columns, cellSize*g.rows
+	if thickness <= 0 {
+		thickness = 1
+	}
+	width, height := (cellSize*g.columns)+thickness, (cellSize*g.rows)+thickness
 	background, wall := rl.White, rl.Black
 	image := rl.GenImageColor(width, height, background)
 	// Draw a "frame" around the image
-	rl.ImageDrawRectangleLines(image, rl.NewRectangle(0, 0, float32(width), float32(height)), 1, wall)
+	rl.ImageDrawRectangleLines(image, rl.NewRectangle(0, 0, float32(width), float32(height)), thickness, wall)
 	for cell := range g.EachCell() {
 		x1, y1, x2, y2 := cell.column*cellSize, cell.row*cellSize, (cell.column+1)*cellSize, ((cell.row)+1)*cellSize
 		if cell.north == nil {
