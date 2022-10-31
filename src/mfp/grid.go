@@ -55,13 +55,15 @@ func (g *Grid) ToPng(cellSize int) error {
 }
 
 func (g *Grid) String() string {
-	output := "+" + strings.Repeat("---+", g.columns) + "\n"
+	output := "+" + strings.Repeat("----", g.columns-1) + "---+" + "\n"
 	for row := range g.EachRow() {
-		top, bottom := "|", "+"
+		top, bottom := "|", "b"
 		for i := range row {
-			body, corner := "   ", "+"
-			var eastBoundary, southBoundary string
 			cell := row[i]
+			// three spaces
+			body, corner := " c ", "|"
+			var eastBoundary, southBoundary string
+
 			if cell == nil {
 				cell = &Cell{
 					row:    -1,
@@ -78,6 +80,18 @@ func (g *Grid) String() string {
 				southBoundary = "   "
 			} else {
 				southBoundary = "---"
+			}
+			if !cell.Linked(cell.east) && !cell.Linked(cell.south) {
+				corner = "+"
+			}
+			if cell.Linked(cell.south) && !cell.Linked(cell.east) {
+				corner = "|"
+			}
+			if cell.Linked(cell.east) && cell.Linked(cell.south) {
+				corner = "-"
+			}
+			if cell.Linked(cell.east) && !cell.Linked(cell.south) {
+				corner = "-"
 			}
 			bottom = bottom + southBoundary + corner
 		}
