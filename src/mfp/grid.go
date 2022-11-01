@@ -24,7 +24,6 @@ type GridHandler interface {
 	ToImage(cellSize, thickness int) *rl.Image
 }
 
-// TODO: wall thickness
 // TODO: tile types? use rectangles?
 
 func (g *Grid) ToImage(cellSize, thickness int) *rl.Image {
@@ -34,26 +33,41 @@ func (g *Grid) ToImage(cellSize, thickness int) *rl.Image {
 	if thickness <= 0 {
 		thickness = 1
 	}
+	offset := thickness / 2
 	width, height := (cellSize*g.columns)+thickness, (cellSize*g.rows)+thickness
-	background, wall := rl.White, rl.Black
-	image := rl.GenImageColor(width, height, background)
-	// Draw a "frame" around the image
-	rl.ImageDrawRectangleLines(image, rl.NewRectangle(0, 0, float32(width), float32(height)), thickness, wall)
+	background, wall := rl.RayWhite, rl.Black
+
+	// Let's use a hidden OpenGL context to
+	// draw the image since the texture
+	// drawing functions work better
+	rl.SetConfigFlags(rl.FlagWindowHidden)
+	rl.InitWindow(int32(width), int32(height), "")
+	rl.SetTargetFPS(60)
+	target := rl.LoadRenderTexture(int32(width), int32(height))
+
+	defer rl.EndTextureMode()
+	defer rl.UnloadRenderTexture(target)
+	rl.BeginDrawing()
+	rl.BeginTextureMode(target)
+	rl.ClearBackground(background)
 	for cell := range g.EachCell() {
-		x1, y1, x2, y2 := cell.column*cellSize, cell.row*cellSize, (cell.column+1)*cellSize, ((cell.row)+1)*cellSize
+		x1, y1, x2, y2 := (cell.column*cellSize)+offset, (cell.row*cellSize)+offset, ((cell.column+1)*cellSize)+offset, (((cell.row)+1)*cellSize)+offset
 		if cell.north == nil {
-			rl.ImageDrawLine(image, int32(x1), int32(y1), int32(x2), int32(y1), wall)
+			rl.DrawLineBezier(rl.NewVector2(float32(x1), float32(y1)), rl.NewVector2(float32(x2), float32(y1)), float32(thickness), wall)
 		}
 		if cell.west == nil {
-			rl.ImageDrawLine(image, int32(x1), int32(y1), int32(x1), int32(y2), wall)
+			rl.DrawLineBezier(rl.NewVector2(float32(x1), float32(y1)), rl.NewVector2(float32(x1), float32(y2)), float32(thickness), wall)
 		}
 		if !cell.Linked(cell.east) {
-			rl.ImageDrawLine(image, int32(x2), int32(y1), int32(x2), int32(y2), wall)
+			rl.DrawLineBezier(rl.NewVector2(float32(x2), float32(y1)), rl.NewVector2(float32(x2), float32(y2)), float32(thickness), wall)
 		}
 		if !cell.Linked(cell.south) {
-			rl.ImageDrawLine(image, int32(x1), int32(y2), int32(x2), int32(y2), wall)
+			rl.DrawLineBezier(rl.NewVector2(float32(x1), float32(y2)), rl.NewVector2(float32(x2), float32(y2)), float32(thickness), wall)
 		}
 	}
+	rl.EndDrawing()
+
+	image := rl.LoadImageFromTexture(target.Texture)
 	rl.ImageFlipVertical(*&image)
 	return image
 }
