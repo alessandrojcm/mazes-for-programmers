@@ -21,35 +21,15 @@ type GridHandler interface {
 	RandomCell() (*Cell, error)
 	EachRow() chan []*Cell
 	EachCell() chan *Cell
-	ToImage(cellSize, thickness int) *rl.Image
+	ToImage(cellSize, thickness int, colourTiles bool) *rl.Image
 }
 
 // TODO: tile types? use rectangles?
 
-func (g *Grid) ToImage(cellSize, thickness int) *rl.Image {
-	if cellSize <= 0 {
-		cellSize = 10
-	}
-	if thickness <= 0 {
-		thickness = 1
-	}
+func renderWithBezierCurves(g *Grid, cellSize, thickness int) {
 	offset := thickness / 2
-	width, height := (cellSize*g.columns)+thickness, (cellSize*g.rows)+thickness
-	background, wall := rl.RayWhite, rl.Black
-
-	// Let's use a hidden OpenGL context to
-	// draw the image since the texture
-	// drawing functions work better
-	rl.SetConfigFlags(rl.FlagWindowHidden)
-	rl.InitWindow(int32(width), int32(height), "")
-	rl.SetTargetFPS(60)
-	target := rl.LoadRenderTexture(int32(width), int32(height))
-
-	defer rl.EndTextureMode()
-	defer rl.UnloadRenderTexture(target)
+	wall := rl.Black
 	rl.BeginDrawing()
-	rl.BeginTextureMode(target)
-	rl.ClearBackground(background)
 	for cell := range g.EachCell() {
 		x1, y1, x2, y2 := (cell.column*cellSize)+offset, (cell.row*cellSize)+offset, ((cell.column+1)*cellSize)+offset, (((cell.row)+1)*cellSize)+offset
 		if cell.north == nil {
@@ -66,6 +46,143 @@ func (g *Grid) ToImage(cellSize, thickness int) *rl.Image {
 		}
 	}
 	rl.EndDrawing()
+}
+
+func renderWithTiles(g *Grid, cellSize int) {
+	rl.BeginDrawing()
+	offset := 0
+	for cell := range g.EachCell() {
+		x, y := int32(cell.column*cellSize+offset), int32(cell.row*cellSize+offset)
+		width, height := x+int32(cellSize), y+int32(cellSize)
+		// closed cell
+		if !cell.Linked(cell.north) && !cell.Linked(cell.south) && !cell.Linked(cell.east) && !cell.Linked(cell.west) {
+			centerX, centerY := x+(width/2), y+(height)/2
+			rl.DrawRectangleLines(x, y, width, height, rl.Black)
+			rl.DrawCircleGradient(centerX, centerY, float32(cellSize), rl.Black, rl.White)
+			continue
+		}
+		//--- straight line gradients --
+		//north open
+		if cell.Linked(cell.north) && !cell.Linked(cell.south) && !cell.Linked(cell.east) && !cell.Linked(cell.west) {
+			rl.DrawRectangleGradientV(x, y, width, height, rl.DarkGreen, rl.RayWhite)
+			continue
+		}
+		// South open
+		if cell.Linked(cell.south) && !cell.Linked(cell.north) && !cell.Linked(cell.east) && !cell.Linked(cell.west) {
+			rl.DrawRectangleGradientV(x, y, width, height, rl.White, rl.Maroon)
+			continue
+		}
+		// East open
+		if cell.Linked(cell.east) && !cell.Linked(cell.north) && !cell.Linked(cell.south) && !cell.Linked(cell.west) {
+			rl.DrawRectangleGradientH(x, y, width, height, rl.White, rl.Yellow)
+			continue
+		}
+		// west open
+		if cell.Linked(cell.west) && !cell.Linked(cell.north) && !cell.Linked(cell.south) && !cell.Linked(cell.east) {
+			rl.DrawRectangleGradientH(x, y, width, height, rl.White, rl.DarkGray)
+			continue
+		}
+		//--- diagonal gradients ---
+		//We won't actually have any true diagonal gradients
+		//since they are way too complex to implement for the scope of this project,
+		//so we'll just paint the corners with a slighter
+		//reduce alpha value to simulate a gradient
+		//North & east open
+		if cell.Linked(cell.north) && cell.Linked(cell.east) && !cell.Linked(cell.west) && !cell.Linked(cell.south) {
+			fadedColor := rl.Fade(rl.Red, 0.5)
+			rl.DrawRectangleGradientEx(rl.NewRectangle(float32(x), float32(y), float32(width), float32(height)), fadedColor, rl.Red, fadedColor, rl.White)
+			continue
+		}
+		// east & south open
+		if cell.Linked(cell.east) && cell.Linked(cell.south) && !cell.Linked(cell.north) && !cell.Linked(cell.west) {
+			fadedColor := rl.Fade(rl.Gold, 0.5)
+			rl.DrawRectangleGradientEx(rl.NewRectangle(float32(x), float32(y), float32(width), float32(height)), rl.Gold, fadedColor, rl.White, fadedColor)
+			continue
+		}
+		// north & west open
+		if cell.Linked(cell.north) && cell.Linked(cell.west) && !cell.Linked(cell.east) && !cell.Linked(cell.south) {
+			fadedColor := rl.Fade(rl.Violet, 0.5)
+			rl.DrawRectangleGradientEx(rl.NewRectangle(float32(x), float32(y), float32(width), float32(height)), rl.White, fadedColor, rl.Violet, fadedColor)
+			continue
+		}
+		// west & south open
+		if cell.Linked(cell.west) && cell.Linked(cell.south) && !cell.Linked(cell.north) && !cell.Linked(cell.east) {
+			fadedColor := rl.Fade(rl.Pink, 0.5)
+			rl.DrawRectangleGradientEx(rl.NewRectangle(float32(x), float32(y), float32(width), float32(height)), fadedColor, rl.White, fadedColor, rl.Violet)
+			continue
+		}
+		// --- open ended ---
+		// Open Cell
+		if cell.Linked(cell.west) && cell.Linked(cell.south) && cell.Linked(cell.north) && cell.Linked(cell.east) {
+			centerX, centerY := x+(width/2), y+(height)/2
+			rl.DrawCircleGradient(centerX, centerY, float32(cellSize), rl.White, rl.Blue)
+			continue
+		}
+		// -- double openings --
+		// north & south open
+		if cell.Linked(cell.north) && cell.Linked(cell.south) && !cell.Linked(cell.east) && !cell.Linked(cell.west) {
+			rl.DrawRectangleGradientH(x, y, width, height, rl.Brown, rl.White)
+			continue
+		}
+		// east & west open
+		if cell.Linked(cell.east) && cell.Linked(cell.west) && !cell.Linked(cell.north) && !cell.Linked(cell.south) {
+			rl.DrawRectangleGradientH(x, y, width, height, rl.DarkBlue, rl.White)
+			continue
+		}
+		// --- triple openings ---
+		// only north closed
+		if !cell.Linked(cell.north) && cell.Linked(cell.south) && cell.Linked(cell.east) && cell.Linked(cell.west) {
+			rl.DrawRectangleGradientH(x, y, width, height, rl.DarkPurple, rl.White)
+			continue
+		}
+		// only south closed
+		if !cell.Linked(cell.south) && cell.Linked(cell.north) && cell.Linked(cell.east) && cell.Linked(cell.west) {
+			rl.DrawRectangleGradientH(x, y, width, height, rl.Orange, rl.White)
+			continue
+		}
+		// only east closed
+		if !cell.Linked(cell.east) && cell.Linked(cell.north) && cell.Linked(cell.south) && cell.Linked(cell.west) {
+			rl.DrawRectangleGradientH(x, y, width, height, rl.Beige, rl.White)
+			continue
+		}
+		// only west closed
+		if !cell.Linked(cell.west) && cell.Linked(cell.north) && cell.Linked(cell.east) && cell.Linked(cell.south) {
+			rl.DrawRectangleGradientH(x, y, width, height, rl.SkyBlue, rl.White)
+			continue
+		}
+	}
+	rl.EndDrawing()
+}
+
+func (g *Grid) ToImage(cellSize, thickness int, colourTiles bool) *rl.Image {
+	if cellSize <= 0 {
+		cellSize = 10
+	}
+	if thickness <= 0 {
+		thickness = 1
+	}
+
+	width, height := (cellSize*g.columns)+thickness, (cellSize*g.rows)+thickness
+	background := rl.RayWhite
+
+	// Let's use a hidden OpenGL context to
+	// draw the image since the texture
+	// drawing functions work better
+	rl.SetConfigFlags(rl.FlagWindowHidden)
+	rl.InitWindow(int32(width), int32(height), "")
+	rl.SetTargetFPS(60)
+	target := rl.LoadRenderTexture(int32(width), int32(height))
+
+	defer rl.EndTextureMode()
+	defer rl.UnloadRenderTexture(target)
+
+	rl.BeginTextureMode(target)
+	rl.ClearBackground(background)
+	if !colourTiles {
+		renderWithBezierCurves(g, cellSize, thickness)
+	} else {
+		renderWithTiles(g, cellSize)
+	}
 
 	image := rl.LoadImageFromTexture(target.Texture)
 	rl.ImageFlipVertical(*&image)
