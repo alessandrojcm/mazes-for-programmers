@@ -43,7 +43,10 @@ func main() {
 	fmt.Printf("Printing %s %vx%v maze with %s bias\n", algorithm, rows, columns, bias)
 	fmt.Println(grid)
 	if export {
-		img := grid.ToImage(cellSize, wallThickness, colorTiles)
+		target := grid.ToTexture(cellSize, wallThickness, colorTiles)
+		img := rl.LoadImageFromTexture(target.Texture)
+		rl.ImageFlipVertical(*&img)
+		defer rl.UnloadRenderTexture(*target)
 		defer rl.UnloadImage(img)
 		rl.ExportImage(*img, fmt.Sprintf("%s-%vrowX%vcol-%s-%v.png", algorithm, rows, columns, bias, time.Now().UnixNano()))
 	}

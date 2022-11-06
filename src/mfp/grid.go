@@ -22,7 +22,7 @@ type GridHandler interface {
 	RandomCell() (*Cell, error)
 	EachRow() chan []*Cell
 	EachCell() chan *Cell
-	ToImage(cellSize, thickness int, colourTiles bool) *rl.Image
+	ToTexture(cellSize, thickness int, colourTiles bool) *rl.RenderTexture2D
 }
 
 // TODO: tile types? use rectangles?
@@ -213,7 +213,7 @@ func renderWithTiles(g *Grid, cellSize int) {
 	rl.EndDrawing()
 }
 
-func (g *Grid) ToImage(cellSize, thickness int, colourTiles bool) *rl.Image {
+func (g *Grid) ToTexture(cellSize, thickness int, colourTiles bool) *rl.RenderTexture2D {
 	debug := os.Getenv("DEBUG")
 	if cellSize <= 0 {
 		cellSize = 10
@@ -234,7 +234,6 @@ func (g *Grid) ToImage(cellSize, thickness int, colourTiles bool) *rl.Image {
 	target := rl.LoadRenderTexture(int32(width), int32(height))
 
 	defer rl.EndTextureMode()
-	defer rl.UnloadRenderTexture(target)
 
 	rl.BeginTextureMode(target)
 	rl.ClearBackground(background)
@@ -247,9 +246,7 @@ func (g *Grid) ToImage(cellSize, thickness int, colourTiles bool) *rl.Image {
 		renderDebugLines(g, cellSize)
 	}
 
-	image := rl.LoadImageFromTexture(target.Texture)
-	rl.ImageFlipVertical(*&image)
-	return image
+	return &target
 }
 
 // There are a few edge cases
