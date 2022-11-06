@@ -4,6 +4,7 @@ import (
 	"errors"
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"math/rand"
+	"os"
 	"strings"
 	"time"
 )
@@ -25,6 +26,20 @@ type GridHandler interface {
 }
 
 // TODO: tile types? use rectangles?
+
+func renderDebugLines(g *Grid, cellSize int) {
+	line := rl.Red
+	rl.BeginDrawing()
+	for x := 0; x < g.columns*cellSize; x += cellSize {
+		rl.DrawLine(int32(x), 0, int32(x), int32(g.rows*cellSize), line)
+	}
+	rl.EndDrawing()
+	rl.BeginDrawing()
+	for y := 0; y < g.rows*cellSize; y += cellSize {
+		rl.DrawLine(0, int32(y), int32(g.columns*cellSize), int32(y), line)
+	}
+	rl.EndDrawing()
+}
 
 func renderWithBezierCurves(g *Grid, cellSize, thickness int) {
 	offset := thickness / 2
@@ -50,36 +65,35 @@ func renderWithBezierCurves(g *Grid, cellSize, thickness int) {
 
 func renderWithTiles(g *Grid, cellSize int) {
 	rl.BeginDrawing()
-	offset := 0
 	for cell := range g.EachCell() {
-		x, y := int32(cell.column*cellSize+offset), int32(cell.row*cellSize+offset)
-		width, height := x+int32(cellSize), y+int32(cellSize)
+		x, y := int32(cell.column*cellSize), int32(cell.row*cellSize)
+		center := rl.NewVector2(float32(x+(int32(cellSize)/2)), float32(y+(int32(cellSize))/2))
 		// closed cell
 		if !cell.Linked(cell.north) && !cell.Linked(cell.south) && !cell.Linked(cell.east) && !cell.Linked(cell.west) {
-			centerX, centerY := x+(width/2), y+(height)/2
-			rl.DrawRectangleLines(x, y, width, height, rl.Black)
+			centerX, centerY := x+(int32(cellSize)/2), y+(int32(cellSize))/2
+			rl.DrawRectangleLines(x, y, int32(cellSize), int32(cellSize), rl.Black)
 			rl.DrawCircleGradient(centerX, centerY, float32(cellSize), rl.Black, rl.White)
 			continue
 		}
 		//--- straight line gradients --
 		//north open
 		if cell.Linked(cell.north) && !cell.Linked(cell.south) && !cell.Linked(cell.east) && !cell.Linked(cell.west) {
-			rl.DrawRectangleGradientV(x, y, width, height, rl.DarkGreen, rl.RayWhite)
+			rl.DrawRectangleGradientV(x, y, int32(cellSize), int32(cellSize), rl.DarkGreen, rl.RayWhite)
 			continue
 		}
 		// South open
 		if cell.Linked(cell.south) && !cell.Linked(cell.north) && !cell.Linked(cell.east) && !cell.Linked(cell.west) {
-			rl.DrawRectangleGradientV(x, y, width, height, rl.White, rl.Maroon)
+			rl.DrawRectangleGradientV(x, y, int32(cellSize), int32(cellSize), rl.White, rl.Maroon)
 			continue
 		}
 		// East open
 		if cell.Linked(cell.east) && !cell.Linked(cell.north) && !cell.Linked(cell.south) && !cell.Linked(cell.west) {
-			rl.DrawRectangleGradientH(x, y, width, height, rl.White, rl.Yellow)
+			rl.DrawRectangleGradientH(x, y, int32(cellSize), int32(cellSize), rl.White, rl.Yellow)
 			continue
 		}
 		// west open
 		if cell.Linked(cell.west) && !cell.Linked(cell.north) && !cell.Linked(cell.south) && !cell.Linked(cell.east) {
-			rl.DrawRectangleGradientH(x, y, width, height, rl.White, rl.DarkGray)
+			rl.DrawRectangleGradientH(x, y, int32(cellSize), int32(cellSize), rl.White, rl.DarkGray)
 			continue
 		}
 		//--- diagonal gradients ---
@@ -90,64 +104,109 @@ func renderWithTiles(g *Grid, cellSize int) {
 		//North & east open
 		if cell.Linked(cell.north) && cell.Linked(cell.east) && !cell.Linked(cell.west) && !cell.Linked(cell.south) {
 			fadedColor := rl.Fade(rl.Red, 0.5)
-			rl.DrawRectangleGradientEx(rl.NewRectangle(float32(x), float32(y), float32(width), float32(height)), fadedColor, rl.Red, fadedColor, rl.White)
+			rl.DrawRectangleGradientEx(rl.NewRectangle(float32(x), float32(y), float32(cellSize), float32(cellSize)), fadedColor, rl.Red, fadedColor, rl.White)
 			continue
 		}
 		// east & south open
 		if cell.Linked(cell.east) && cell.Linked(cell.south) && !cell.Linked(cell.north) && !cell.Linked(cell.west) {
 			fadedColor := rl.Fade(rl.Gold, 0.5)
-			rl.DrawRectangleGradientEx(rl.NewRectangle(float32(x), float32(y), float32(width), float32(height)), rl.Gold, fadedColor, rl.White, fadedColor)
+			rl.DrawRectangleGradientEx(rl.NewRectangle(float32(x), float32(y), float32(cellSize), float32(cellSize)), rl.Gold, fadedColor, rl.White, fadedColor)
 			continue
 		}
 		// north & west open
 		if cell.Linked(cell.north) && cell.Linked(cell.west) && !cell.Linked(cell.east) && !cell.Linked(cell.south) {
 			fadedColor := rl.Fade(rl.Violet, 0.5)
-			rl.DrawRectangleGradientEx(rl.NewRectangle(float32(x), float32(y), float32(width), float32(height)), rl.White, fadedColor, rl.Violet, fadedColor)
+			rl.DrawRectangleGradientEx(rl.NewRectangle(float32(x), float32(y), float32(cellSize), float32(cellSize)), rl.White, fadedColor, rl.Violet, fadedColor)
 			continue
 		}
 		// west & south open
 		if cell.Linked(cell.west) && cell.Linked(cell.south) && !cell.Linked(cell.north) && !cell.Linked(cell.east) {
 			fadedColor := rl.Fade(rl.Pink, 0.5)
-			rl.DrawRectangleGradientEx(rl.NewRectangle(float32(x), float32(y), float32(width), float32(height)), fadedColor, rl.White, fadedColor, rl.Violet)
+			rl.DrawRectangleGradientEx(rl.NewRectangle(float32(x), float32(y), float32(cellSize), float32(cellSize)), fadedColor, rl.White, fadedColor, rl.Violet)
 			continue
 		}
 		// --- open ended ---
 		// Open Cell
 		if cell.Linked(cell.west) && cell.Linked(cell.south) && cell.Linked(cell.north) && cell.Linked(cell.east) {
-			centerX, centerY := x+(width/2), y+(height)/2
-			rl.DrawCircleGradient(centerX, centerY, float32(cellSize), rl.White, rl.Blue)
+			rl.DrawCircleGradient(int32(center.X), int32(center.Y), float32(cellSize/2), rl.White, rl.Blue)
 			continue
 		}
 		// -- double openings --
-		// north & south open
-		if cell.Linked(cell.north) && cell.Linked(cell.south) && !cell.Linked(cell.east) && !cell.Linked(cell.west) {
-			rl.DrawRectangleGradientH(x, y, width, height, rl.Brown, rl.White)
-			continue
-		}
+		// We will draw like an hourglass shape superposing two triangles
 		// east & west open
 		if cell.Linked(cell.east) && cell.Linked(cell.west) && !cell.Linked(cell.north) && !cell.Linked(cell.south) {
-			rl.DrawRectangleGradientH(x, y, width, height, rl.DarkBlue, rl.White)
+			rl.DrawTriangle(
+				rl.NewVector2(float32(x), float32(y)),
+				rl.NewVector2(float32(x), float32(y+int32(cellSize))),
+				center,
+				rl.DarkBlue,
+			)
+			rl.DrawTriangle(
+				rl.NewVector2(float32(x+int32(cellSize)), float32(y)),
+				center,
+				rl.NewVector2(float32(x+int32(cellSize)), float32(y+int32(cellSize))),
+				rl.DarkBlue,
+			)
+			continue
+		}
+		// north & south open
+		if cell.Linked(cell.north) && cell.Linked(cell.south) && !cell.Linked(cell.east) && !cell.Linked(cell.west) {
+			rl.DrawTriangle(
+				rl.NewVector2(float32(x), float32(y)),
+				center,
+				rl.NewVector2(float32(x+int32(cellSize)), float32(y)),
+				rl.DarkBlue,
+			)
+			rl.DrawTriangle(
+				center,
+				rl.NewVector2(
+					float32(x),
+					float32(y+int32(cellSize)),
+				),
+				rl.NewVector2(float32(x+int32(cellSize)), float32(y+int32(cellSize))),
+				rl.DarkBlue,
+			)
 			continue
 		}
 		// --- triple openings ---
 		// only north closed
 		if !cell.Linked(cell.north) && cell.Linked(cell.south) && cell.Linked(cell.east) && cell.Linked(cell.west) {
-			rl.DrawRectangleGradientH(x, y, width, height, rl.DarkPurple, rl.White)
+			rl.DrawTriangle(
+				rl.NewVector2(float32(x), float32(y)),
+				center,
+				rl.NewVector2(float32(x+int32(cellSize)), float32(y)),
+				rl.DarkBlue,
+			)
 			continue
 		}
 		// only south closed
 		if !cell.Linked(cell.south) && cell.Linked(cell.north) && cell.Linked(cell.east) && cell.Linked(cell.west) {
-			rl.DrawRectangleGradientH(x, y, width, height, rl.Orange, rl.White)
+			rl.DrawTriangle(
+				center,
+				rl.NewVector2(float32(x), float32(y+int32(cellSize))),
+				rl.NewVector2(float32(x+int32(cellSize)), float32(y+int32(cellSize))),
+				rl.DarkBlue,
+			)
 			continue
 		}
 		// only east closed
 		if !cell.Linked(cell.east) && cell.Linked(cell.north) && cell.Linked(cell.south) && cell.Linked(cell.west) {
-			rl.DrawRectangleGradientH(x, y, width, height, rl.Beige, rl.White)
+			rl.DrawTriangle(
+				rl.NewVector2(float32(x), float32(y)),
+				rl.NewVector2(float32(x), float32(y+int32(cellSize))),
+				center,
+				rl.DarkBlue,
+			)
 			continue
 		}
 		// only west closed
 		if !cell.Linked(cell.west) && cell.Linked(cell.north) && cell.Linked(cell.east) && cell.Linked(cell.south) {
-			rl.DrawRectangleGradientH(x, y, width, height, rl.SkyBlue, rl.White)
+			rl.DrawTriangle(
+				rl.NewVector2(float32(x+int32(cellSize)), float32(y)),
+				center,
+				rl.NewVector2(float32(x+int32(cellSize)), float32(y+int32(cellSize))),
+				rl.DarkBlue,
+			)
 			continue
 		}
 	}
@@ -155,6 +214,7 @@ func renderWithTiles(g *Grid, cellSize int) {
 }
 
 func (g *Grid) ToImage(cellSize, thickness int, colourTiles bool) *rl.Image {
+	debug := os.Getenv("DEBUG")
 	if cellSize <= 0 {
 		cellSize = 10
 	}
@@ -182,6 +242,9 @@ func (g *Grid) ToImage(cellSize, thickness int, colourTiles bool) *rl.Image {
 		renderWithBezierCurves(g, cellSize, thickness)
 	} else {
 		renderWithTiles(g, cellSize)
+	}
+	if debug == "True" {
+		renderDebugLines(g, cellSize)
 	}
 
 	image := rl.LoadImageFromTexture(target.Texture)
