@@ -6,10 +6,15 @@ import (
 
 type DistanceGrid struct {
 	*ASCIIGrid
+	Distances Distance
 }
 
-func (grid *DistanceGrid) ContentsOf(cell *Cell) string {
-	distance, isOk := cell.Distances().cells[&cell]
+func (grid DistanceGrid) String() string {
+	return gridToString(grid)
+}
+
+func (grid DistanceGrid) ContentsOf(cell *Cell) string {
+	distance, isOk := grid.Distances.cells[cell]
 	if !isOk {
 		return " "
 	}

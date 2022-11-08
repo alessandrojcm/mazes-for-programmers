@@ -30,6 +30,7 @@ func main() {
 	rootCmd.PersistentFlags().IntP("thickness", "w", 1, "sets the thickness of the walls for the exported images")
 	rootCmd.PersistentFlags().BoolP("tiles", "t", false, "colour the tiles")
 	rootCmd.PersistentFlags().BoolP("show", "o", false, "show result in window")
+	rootCmd.PersistentFlags().BoolP("distance", "i", false, "render the distance value of the cells")
 	rootCmd.Flags().BoolVarP(&debug, "debug", "d", false, "show debug grid")
 	rootCmd.AddCommand(commands.Sidewinder)
 	rootCmd.AddCommand(commands.BinaryTree)

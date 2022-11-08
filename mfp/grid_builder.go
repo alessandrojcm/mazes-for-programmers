@@ -11,7 +11,7 @@ type GridBuilderHandler interface {
 	BuildBaseGrid() (BaseGrid, error)
 	BuildASCIIGrid() (ASCIIGrid, error)
 	BuildRenderGrid() (RendererGrid, error)
-	//BuildGridWithDistance() (DistanceGrid, error)
+	BuildGridWithDistance() (DistanceGrid, error)
 }
 
 func NewBuilder(rows, column int) *GridBuilder {
@@ -56,8 +56,10 @@ func (g *GridBuilder) BuildRenderGrid() (RendererGrid, error) {
 	return RendererGrid{&asciiGrid}, err
 }
 
-//
-//func (g *GridBuilder) BuildGridWithDistance() (DistanceGrid, error) {
-//	//TODO implement me
-//	panic("implement me")
-//}
+func (g *GridBuilder) BuildGridWithDistance() (DistanceGrid, error) {
+	asciiGrid, err := g.BuildASCIIGrid()
+	return DistanceGrid{
+		&asciiGrid,
+		Distance{},
+	}, err
+}

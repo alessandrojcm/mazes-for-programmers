@@ -23,20 +23,41 @@ var Sidewinder = &cobra.Command{
 		colorTiles, _ := cmd.Flags().GetBool("tiles")
 		show, _ := cmd.Flags().GetBool("show")
 		bias, _ := cmd.Flags().GetString("bias")
+		distance, _ := cmd.Flags().GetBool("distance")
 		builder := mfp.NewBuilder(rows, columns)
-		grid, err := builder.BuildASCIIGrid()
-		if err != nil {
-			panic(err)
+		if distance {
+			grid, err := builder.BuildGridWithDistance()
+			if err != nil {
+				panic(err)
+			}
+			mfp.SideWinder(grid)
+			start, err := grid.CellAt(0, 0)
+			distances := start.Distances()
+			grid.Distances = distances
+
+			fmt.Printf("Printing distance %s %vx%v maze with\n", "sidewinder", rows, columns)
+			fmt.Println(grid)
+		} else {
+			grid, err := builder.BuildASCIIGrid()
+			if err != nil {
+				panic(err)
+			}
+			mfp.SideWinder(grid)
+			fmt.Printf("Printing %s %vx%v maze\n", "sidewinder", rows, columns)
+			fmt.Println(grid)
 		}
-		mfp.SideWinder(grid)
-		fmt.Printf("Printing %s %vx%v maze with %s bias\n", "sidewinder", rows, columns, bias)
-		fmt.Println(grid)
 		if export || show {
 			rendererGrid, err := builder.BuildRenderGrid()
 			if err != nil {
 				panic(err)
 			}
-			name := fmt.Sprintf("%s-%vrowX%vcol-%s-%v.png", "sidewinder", rows, columns, bias, time.Now().UnixNano())
+			var name string
+			if distance {
+				name = fmt.Sprintf("%s-%vrowX%vcol-%s-%v-with-distance.png", "sidewinder", rows, columns, bias, time.Now().UnixNano())
+
+			} else {
+				name = fmt.Sprintf("%s-%vrowX%vcol-%s-%v.png", "sidewinder", rows, columns, bias, time.Now().UnixNano())
+			}
 			target := rendererGrid.ToTexture(cellSize, wallThickness, colorTiles)
 
 			if export {

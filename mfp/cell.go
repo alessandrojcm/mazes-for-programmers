@@ -14,7 +14,7 @@ type CellHandler interface {
 	Links() []*Cell
 	Linked(cell *Cell) bool
 	Neighbors() []*Cell
-	Distances() Distance[*Cell]
+	Distances() Distance
 }
 
 func NewCell(row, column int) (*Cell, error) {
@@ -49,10 +49,10 @@ func (receiver *Cell) Neighbors() []*Cell {
 }
 
 func (receiver *Cell) Links() []*Cell {
-	keys := make([]*Cell, len(receiver.links)-1)
+	var keys []*Cell
 
 	for k := range receiver.links {
-		if k == receiver {
+		if k == receiver || k == nil {
 			continue
 		}
 		keys = append(keys, k)
@@ -89,8 +89,8 @@ func (receiver *Cell) Unlink(cell *Cell, bidi bool) error {
 }
 
 // Distances A simplified implementation of Dijkstra's algorithm
-func (receiver *Cell) Distances() Distance[*Cell] {
-	distances := NewDistance[*Cell](receiver)
+func (receiver *Cell) Distances() Distance {
+	distances := NewDistance(receiver)
 	frontier := []*Cell{receiver}
 
 	for len(frontier) > 0 {
@@ -98,11 +98,11 @@ func (receiver *Cell) Distances() Distance[*Cell] {
 
 		for _, cell := range frontier {
 			for _, linked := range cell.Links() {
-				_, isLinked := distances.cells[&linked]
+				_, isLinked := distances.cells[linked]
 				if isLinked {
 					continue
 				}
-				distances.cells[&linked] = distances.cells[&cell] + 1
+				distances.cells[linked] = distances.cells[cell] + 1
 				newFrontier = append(newFrontier, linked)
 			}
 		}

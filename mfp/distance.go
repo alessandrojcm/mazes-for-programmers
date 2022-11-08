@@ -1,17 +1,15 @@
 package mfp
 
-type Constraint = CellHandler
-
-type Distance[TCell Constraint] struct {
-	root  *TCell
-	cells map[*TCell]int
+type Distance struct {
+	root  *Cell
+	cells map[*Cell]int
 }
 
-func NewDistance[TCell Constraint](root TCell) Distance[TCell] {
-	cells := make(map[*TCell]int)
-	cells[&root] = 0
-	return Distance[TCell]{
-		root:  &root,
+func NewDistance(root *Cell) Distance {
+	cells := make(map[*Cell]int)
+	cells[root] = 0
+	return Distance{
+		root:  root,
 		cells: cells,
 	}
 }
