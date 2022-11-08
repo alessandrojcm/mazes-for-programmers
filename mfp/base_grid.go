@@ -20,6 +20,16 @@ type BaseGridHandler interface {
 	EachRow() chan []*Cell
 	EachCell() chan *Cell
 	Empty() bool
+	Rows() int
+	Columns() int
+}
+
+func (g *BaseGrid) Rows() int {
+	return g.rows
+}
+
+func (g *BaseGrid) Columns() int {
+	return g.columns
 }
 
 func (g *BaseGrid) Empty() bool {
