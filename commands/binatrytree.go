@@ -23,8 +23,8 @@ var BinaryTree = &cobra.Command{
 		colorTiles, _ := cmd.Flags().GetBool("tiles")
 		show, _ := cmd.Flags().GetBool("show")
 		bias, _ := cmd.Flags().GetString("bias")
-
-		grid, err := mfp.NewGrid(rows, columns)
+		builder := mfp.NewBuilder(rows, columns)
+		grid, err := builder.BuildASCIIGrid()
 		if err != nil {
 			panic(err)
 		}
@@ -32,8 +32,12 @@ var BinaryTree = &cobra.Command{
 		fmt.Printf("Printing %s %vx%v maze with %s bias\n", "sidewinder", rows, columns, bias)
 		fmt.Println(grid)
 		if export || show {
+			rendererGrid, err := builder.BuildRenderGrid()
+			if err != nil {
+				panic(err)
+			}
 			name := fmt.Sprintf("%s-%vrowX%vcol-%s-%v.png", "sidewinder", rows, columns, bias, time.Now().UnixNano())
-			target := grid.ToTexture(cellSize, wallThickness, colorTiles)
+			target := rendererGrid.ToTexture(cellSize, wallThickness, colorTiles)
 
 			if export {
 				flags.Export(target, name)

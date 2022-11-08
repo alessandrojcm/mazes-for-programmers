@@ -14,6 +14,19 @@ type CellHandler interface {
 	Links() []*Cell
 	Linked(cell *Cell) bool
 	Neighbors() []*Cell
+	Distances() Distance[*Cell]
+}
+
+func NewCell(row, column int) (*Cell, error) {
+	if row < 0 || column < 0 {
+		return &Cell{}, errors.New("row and column cannot be negative")
+	}
+	cell := Cell{
+		row:    row,
+		column: column,
+	}
+	cell.links = make(map[*Cell]bool)
+	return &cell, nil
 }
 
 func (receiver *Cell) Neighbors() []*Cell {
@@ -54,21 +67,9 @@ func (receiver *Cell) Linked(cell *Cell) bool {
 	if !exists {
 		return false
 	}
-	// return linked anyways cause it could happen that
+	// return linked anyway because it could happen that
 	// it exists but is not linked
 	return linked
-}
-
-func NewCell(row, column int) (*Cell, error) {
-	if row < 0 || column < 0 {
-		return &Cell{}, errors.New("row and column cannot be negative")
-	}
-	cell := Cell{
-		row:    row,
-		column: column,
-	}
-	cell.links = make(map[*Cell]bool)
-	return &cell, nil
 }
 
 func (receiver *Cell) Link(cell *Cell, bidi bool) error {
@@ -85,4 +86,27 @@ func (receiver *Cell) Unlink(cell *Cell, bidi bool) error {
 		return cell.Unlink(receiver, false)
 	}
 	return nil
+}
+
+// Distances A simplified implementation of Dijkstra's algorithm
+func (receiver *Cell) Distances() Distance[*Cell] {
+	distances := NewDistance[*Cell](receiver)
+	frontier := []*Cell{receiver}
+
+	for len(frontier) > 0 {
+		var newFrontier []*Cell
+
+		for _, cell := range frontier {
+			for _, linked := range cell.Links() {
+				_, isLinked := distances.cells[&linked]
+				if isLinked {
+					continue
+				}
+				distances.cells[&linked] = distances.cells[&cell] + 1
+				newFrontier = append(newFrontier, linked)
+			}
+		}
+		frontier = newFrontier
+	}
+	return distances
 }

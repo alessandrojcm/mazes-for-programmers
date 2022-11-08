@@ -8,8 +8,6 @@ require (
 	github.com/stretchr/testify v1.8.1
 )
 
-// Replace with my own fork while this is merged: https://github.com/gen2brain/raylib-go/pull/210
-
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect

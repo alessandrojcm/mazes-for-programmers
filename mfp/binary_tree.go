@@ -9,7 +9,7 @@ const SouthAndWest = "southwest"
 const NorthAndWest = "northwest"
 const SouthAndEast = "southeast"
 
-func BinaryTree(grid GridHandler, bias string) {
+func BinaryTree(grid BaseGridHandler, bias string) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for cell := range grid.EachCell() {
 		neighbors := make([]*Cell, 0, grid.Size())

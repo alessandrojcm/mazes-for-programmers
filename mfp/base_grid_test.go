@@ -1,19 +1,22 @@
-package mfp
+package mfp_test
 
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"mfp/mfp"
 	"testing"
 )
 
 func TestNewGrid(t *testing.T) {
 	t.Parallel()
-	grid, err := NewGrid(4, 4)
+	builder := mfp.NewBuilder(
+		4,
+		4,
+	)
+	grid, err := builder.BuildBaseGrid()
 	assert.ErrorIs(t, err, nil)
 
-	assert.Equal(t, 4, grid.rows)
-	assert.Equal(t, 4, grid.columns)
-	assert.Equal(t, 4, len(grid.cells))
+	assert.Equal(t, 16, grid.Size())
 
 	for column := range grid.EachRow() {
 		assert.Equal(t, 4, len(column), fmt.Sprint(column))
@@ -22,25 +25,36 @@ func TestNewGrid(t *testing.T) {
 
 func TestRowGenerator(t *testing.T) {
 	t.Parallel()
-	grid, err := NewGrid(4, 4)
+	builder := mfp.NewBuilder(
+		4,
+		4,
+	)
+	grid, err := builder.BuildBaseGrid()
 	assert.ErrorIs(t, err, nil)
 	for column := range grid.EachRow() {
-		assert.IsType(t, []*Cell{}, column)
+		assert.IsType(t, []*mfp.Cell{}, column)
 	}
 }
 
 func TestCellGenerator(t *testing.T) {
 	t.Parallel()
-	grid, err := NewGrid(4, 4)
-	assert.ErrorIs(t, err, nil)
+	builder := mfp.NewBuilder(
+		4,
+		4,
+	)
+	grid, _ := builder.BuildBaseGrid()
 	for cell := range grid.EachCell() {
-		assert.IsType(t, &Cell{}, cell)
+		assert.IsType(t, &mfp.Cell{}, cell)
 	}
 }
 
 func TestRandom(t *testing.T) {
 	t.Parallel()
-	grid, err := NewGrid(4, 4)
+	builder := mfp.NewBuilder(
+		4,
+		4,
+	)
+	grid, err := builder.BuildBaseGrid()
 	assert.ErrorIs(t, err, nil)
 	_, err = grid.RandomCell()
 	assert.ErrorIs(t, err, nil)

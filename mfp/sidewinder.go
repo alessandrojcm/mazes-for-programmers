@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func SideWinder(grid GridHandler) {
+func SideWinder(grid BaseGridHandler) {
 	var err error
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for row := range grid.EachRow() {
