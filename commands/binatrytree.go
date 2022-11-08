@@ -27,17 +27,22 @@ var BinaryTree = &cobra.Command{
 		builder := mfp.NewBuilder(rows, columns)
 		if distance {
 			grid, err := builder.BuildGridWithDistance()
-			if err != nil {
-				panic(err)
-			}
 			mfp.BinaryTree(grid, bias)
 			start, err := grid.CellAt(0, 0)
 
 			distances := start.Distances()
 			grid.Distances = distances
 
-			fmt.Printf("Printing distance %s %vx%v maze with %s bias\n", "sidewinder", rows, columns, bias)
+			fmt.Printf("Printing distance %s %vx%v maze with %s bias\n", "binary tree", rows, columns, bias)
 			fmt.Println(grid)
+			goal, err := grid.CellAt(rows-1, columns-1)
+			grid.Distances = distances.PathTo(goal)
+			fmt.Printf("Printing solved %s %vx%v maze with %s bias\n", "binary tree", rows, columns, bias)
+			fmt.Println(grid)
+
+			if err != nil {
+				panic(err)
+			}
 		} else {
 			grid, err := builder.BuildASCIIGrid()
 			if err != nil {

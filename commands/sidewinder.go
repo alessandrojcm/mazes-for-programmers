@@ -37,6 +37,10 @@ var Sidewinder = &cobra.Command{
 
 			fmt.Printf("Printing distance %s %vx%v maze with\n", "sidewinder", rows, columns)
 			fmt.Println(grid)
+			goal, err := grid.CellAt(rows-1, columns-1)
+			grid.Distances = distances.PathTo(goal)
+			fmt.Printf("Printing solved %s %vx%v maze with %s bias\n", "sidewinder", rows, columns, bias)
+			fmt.Println(grid)
 		} else {
 			grid, err := builder.BuildASCIIGrid()
 			if err != nil {

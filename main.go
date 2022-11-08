@@ -9,6 +9,9 @@ import (
 	"runtime"
 )
 
+// TODO: refactor code repetition on commands
+// TODO: add flag to print (make sure to require at least one of the showing flags)
+// TODO: add flags to specify the start & end cell (maybe --solve-from and --solve-to or --solve=from-to idk)
 func main() {
 	// Raylib uses OpenGL and OpenGL expects every
 	// call to be main on a single thread
