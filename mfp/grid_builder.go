@@ -10,7 +10,9 @@ type GridBuilder struct {
 type GridBuilderHandler interface {
 	BuildBaseGrid() (BaseGrid, error)
 	BuildASCIIGrid() (ASCIIGrid, error)
-	BuildRenderGrid() (RendererGrid, error)
+	BuildGridLineRenderer() (RendererGrid, error)
+	BuildGridTiledRenderer() (TiledGrid, error)
+	BuildGridWithDistanceRenderer() (DistanceRenderGrid, error)
 	BuildGridWithDistance() (DistanceGrid, error)
 }
 
@@ -51,7 +53,7 @@ func (g *GridBuilder) BuildASCIIGrid() (ASCIIGrid, error) {
 	}, err
 }
 
-func (g *GridBuilder) BuildRenderGrid() (RendererGrid, error) {
+func (g *GridBuilder) BuildGridLineRenderer() (RendererGrid, error) {
 	asciiGrid, err := g.BuildASCIIGrid()
 	return RendererGrid{&asciiGrid}, err
 }
@@ -61,5 +63,19 @@ func (g *GridBuilder) BuildGridWithDistance() (DistanceGrid, error) {
 	return DistanceGrid{
 		&asciiGrid,
 		Distance{},
+	}, err
+}
+
+func (g *GridBuilder) BuildGridTiledRenderer() (TiledGrid, error) {
+	grid, err := g.BuildGridLineRenderer()
+	return TiledGrid{
+		&grid,
+	}, err
+}
+
+func (g *GridBuilder) BuildGridWithDistanceRenderer() (DistanceRenderGrid, error) {
+	distanceGrid, err := g.BuildGridWithDistance()
+	return DistanceRenderGrid{
+		&distanceGrid,
 	}, err
 }

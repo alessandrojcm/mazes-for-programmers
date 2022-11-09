@@ -10,15 +10,20 @@ import (
 )
 
 // TODO: refactor code repetition on commands
-// TODO: add flag to print (make sure to require at least one of the showing flags)
+// TODO: add flag to print ascii (make sure to require at least one of the showing flags)
 // TODO: add flags to specify the start & end cell (maybe --solve-from and --solve-to or --solve=from-to idk)
+// TODO: add mode to paint background with weight color
+// TODO: refactor file structure
+// TODO: add flag to paint the longest path (override --distance and require either longest or from-to solved)
+// TODO: add loggin
+// TODO: add timer
 func main() {
 	// Raylib uses OpenGL and OpenGL expects every
 	// call to be main on a single thread
 	// so block the thread to avoid crashes
 	runtime.LockOSThread()
 	var debug bool
-	var rootCmd = &cobra.Command{Use: "render2d", Run: func(cmd *cobra.Command, args []string) {
+	var rootCmd = &cobra.Command{Use: "render2d", Aliases: []string{"r2d"}, Run: func(cmd *cobra.Command, args []string) {
 		if debug {
 			os.Setenv("debug", "True")
 		}

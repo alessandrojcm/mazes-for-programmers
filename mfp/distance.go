@@ -5,8 +5,10 @@ type Distance struct {
 	cells map[*Cell]int
 }
 
+// DistanceHandler - interface to implement Distance between cells
 type DistanceHandler interface {
 	PathTo(goal *Cell) Distance
+	Max() (maxCell *Cell, maxDistance int)
 }
 
 func NewDistance(root *Cell) Distance {
@@ -18,6 +20,7 @@ func NewDistance(root *Cell) Distance {
 	}
 }
 
+// PathTo - Returns the shortest path from the root to the given cell
 func (d *Distance) PathTo(goal *Cell) Distance {
 	current := goal
 
@@ -38,4 +41,17 @@ func (d *Distance) PathTo(goal *Cell) Distance {
 		}
 	}
 	return breadcrumbs
+}
+
+// Max - Returns the cell that is the farthest from the root and its distance value
+func (d *Distance) Max() (maxCell *Cell, maxDistance int) {
+	maxCell, maxDistance = d.root, 0
+
+	for cell, distance := range d.cells {
+		if distance > maxDistance {
+			maxCell = cell
+			maxDistance = distance
+		}
+	}
+	return
 }

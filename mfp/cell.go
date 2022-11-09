@@ -89,6 +89,7 @@ func (receiver *Cell) Unlink(cell *Cell, bidi bool) error {
 }
 
 // Distances A simplified implementation of Dijkstra's algorithm
+// TODO: implement bfs
 func (receiver *Cell) Distances() Distance {
 	distances := NewDistance(receiver)
 	frontier := []*Cell{receiver}
