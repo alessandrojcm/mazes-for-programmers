@@ -1,15 +1,16 @@
-package mfp_test
+package grids_test
 
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"mfp/mfp"
+	"mazes-for-programmers/mfp"
+	"mazes-for-programmers/mfp/grids"
 	"testing"
 )
 
 func TestNewGrid(t *testing.T) {
 	t.Parallel()
-	builder := mfp.NewBuilder(
+	builder := grids.NewBuilder(
 		4,
 		4,
 	)
@@ -25,7 +26,7 @@ func TestNewGrid(t *testing.T) {
 
 func TestRowGenerator(t *testing.T) {
 	t.Parallel()
-	builder := mfp.NewBuilder(
+	builder := grids.NewBuilder(
 		4,
 		4,
 	)
@@ -38,7 +39,7 @@ func TestRowGenerator(t *testing.T) {
 
 func TestCellGenerator(t *testing.T) {
 	t.Parallel()
-	builder := mfp.NewBuilder(
+	builder := grids.NewBuilder(
 		4,
 		4,
 	)
@@ -50,7 +51,7 @@ func TestCellGenerator(t *testing.T) {
 
 func TestRandom(t *testing.T) {
 	t.Parallel()
-	builder := mfp.NewBuilder(
+	builder := grids.NewBuilder(
 		4,
 		4,
 	)

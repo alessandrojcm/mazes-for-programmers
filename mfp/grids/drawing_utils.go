@@ -1,24 +1,25 @@
-package mfp
+package grids
 
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
+	"mazes-for-programmers/mfp"
 	"os"
 )
 
-func drawMazeLines(eachCell chan *Cell, cellSize, thickness, offset int, wall rl.Color) {
+func drawMazeLines(eachCell chan *mfp.Cell, cellSize, thickness, offset int, wall rl.Color) {
 	rl.BeginDrawing()
 	for cell := range eachCell {
-		x1, y1, x2, y2 := (cell.column*cellSize)+offset, (cell.row*cellSize)+offset, ((cell.column+1)*cellSize)+offset, (((cell.row)+1)*cellSize)+offset
-		if cell.north == nil {
+		x1, y1, x2, y2 := (cell.Column*cellSize)+offset, (cell.Row*cellSize)+offset, ((cell.Column+1)*cellSize)+offset, (((cell.Row)+1)*cellSize)+offset
+		if cell.North == nil {
 			rl.DrawLineBezier(rl.NewVector2(float32(x1), float32(y1)), rl.NewVector2(float32(x2), float32(y1)), float32(thickness), wall)
 		}
-		if cell.west == nil {
+		if cell.West == nil {
 			rl.DrawLineBezier(rl.NewVector2(float32(x1), float32(y1)), rl.NewVector2(float32(x1), float32(y2)), float32(thickness), wall)
 		}
-		if !cell.Linked(cell.east) {
+		if !cell.Linked(cell.East) {
 			rl.DrawLineBezier(rl.NewVector2(float32(x2), float32(y1)), rl.NewVector2(float32(x2), float32(y2)), float32(thickness), wall)
 		}
-		if !cell.Linked(cell.south) {
+		if !cell.Linked(cell.South) {
 			rl.DrawLineBezier(rl.NewVector2(float32(x1), float32(y2)), rl.NewVector2(float32(x2), float32(y2)), float32(thickness), wall)
 		}
 	}

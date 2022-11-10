@@ -1,4 +1,4 @@
-module mfp
+module mazes-for-programmers
 
 go 1.19
 

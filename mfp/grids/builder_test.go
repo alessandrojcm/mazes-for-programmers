@@ -1,14 +1,14 @@
-package mfp_test
+package grids_test
 
 import (
 	"github.com/stretchr/testify/assert"
-	"mfp/mfp"
+	"mazes-for-programmers/mfp/grids"
 	"testing"
 )
 
 func TestGridBuilder_BuildBaseGrid(t *testing.T) {
 	t.Parallel()
-	builder := mfp.NewBuilder(4, 4)
+	builder := grids.NewBuilder(4, 4)
 
 	grid, err := builder.BuildBaseGrid()
 
@@ -18,7 +18,7 @@ func TestGridBuilder_BuildBaseGrid(t *testing.T) {
 
 func TestGridBuilder_BuildASCIIGrid(t *testing.T) {
 	t.Parallel()
-	builder := mfp.NewBuilder(4, 4)
+	builder := grids.NewBuilder(4, 4)
 
 	grid, err := builder.BuildASCIIGrid()
 

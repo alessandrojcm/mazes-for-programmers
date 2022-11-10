@@ -1,20 +1,21 @@
-package mfp
+package grids
 
 import (
+	"mazes-for-programmers/mfp"
 	"strconv"
 )
 
 type DistanceGrid struct {
 	*ASCIIGrid
-	Distances Distance
+	Distances mfp.Distance
 }
 
 func (grid DistanceGrid) String() string {
 	return gridToString(grid)
 }
 
-func (grid DistanceGrid) ContentsOf(cell *Cell) string {
-	distance, isOk := grid.Distances.cells[cell]
+func (grid DistanceGrid) ContentsOf(cell *mfp.Cell) string {
+	distance, isOk := grid.Distances.Cells[cell]
 	if !isOk {
 		return " "
 	}

@@ -4,8 +4,9 @@ import (
 	"fmt"
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/spf13/cobra"
-	"mfp/flags"
-	"mfp/mfp"
+	"mazes-for-programmers/flags"
+	"mazes-for-programmers/mfp/algorithms"
+	"mazes-for-programmers/mfp/grids"
 	"time"
 )
 
@@ -24,13 +25,13 @@ var Sidewinder = &cobra.Command{
 		show, _ := cmd.Flags().GetBool("show")
 		bias, _ := cmd.Flags().GetString("bias")
 		distance, _ := cmd.Flags().GetBool("distance")
-		builder := mfp.NewBuilder(rows, columns)
+		builder := grids.NewBuilder(rows, columns)
 		if distance {
 			grid, err := builder.BuildGridWithDistance()
 			if err != nil {
 				panic(err)
 			}
-			mfp.SideWinder(grid)
+			algorithms.SideWinder(grid)
 			start, err := grid.CellAt(0, 0)
 			distances := start.Distances()
 			grid.Distances = distances
@@ -46,7 +47,7 @@ var Sidewinder = &cobra.Command{
 			if err != nil {
 				panic(err)
 			}
-			mfp.SideWinder(grid)
+			algorithms.SideWinder(grid)
 			fmt.Printf("Printing %s %vx%v maze\n", "sidewinder", rows, columns)
 			fmt.Println(grid)
 		}

@@ -4,8 +4,9 @@ import (
 	"fmt"
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/spf13/cobra"
-	"mfp/flags"
-	"mfp/mfp"
+	"mazes-for-programmers/flags"
+	"mazes-for-programmers/mfp/algorithms"
+	"mazes-for-programmers/mfp/grids"
 	"time"
 )
 
@@ -24,10 +25,10 @@ var BinaryTree = &cobra.Command{
 		show, _ := cmd.Flags().GetBool("show")
 		bias, _ := cmd.Flags().GetString("bias")
 		distance, _ := cmd.Flags().GetBool("distance")
-		builder := mfp.NewBuilder(rows, columns)
+		builder := grids.NewBuilder(rows, columns)
 		if distance {
 			grid, err := builder.BuildGridWithDistance()
-			mfp.BinaryTree(grid, bias)
+			algorithms.BinaryTree(grid, bias)
 			start, err := grid.CellAt(0, 0)
 
 			distances := start.Distances()
@@ -48,7 +49,7 @@ var BinaryTree = &cobra.Command{
 			if err != nil {
 				panic(err)
 			}
-			mfp.BinaryTree(grid, bias)
+			algorithms.BinaryTree(grid, bias)
 			fmt.Printf("Printing %s %vx%v maze with %s bias\n", "sidewinder", rows, columns, bias)
 			fmt.Println(grid)
 		}

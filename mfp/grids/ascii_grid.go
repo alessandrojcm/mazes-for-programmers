@@ -1,4 +1,6 @@
-package mfp
+package grids
+
+import "mazes-for-programmers/mfp"
 
 type ASCIIGrid struct {
 	*BaseGrid
@@ -6,7 +8,7 @@ type ASCIIGrid struct {
 
 type ASCIIGridHandler interface {
 	BaseGridHandler
-	ContentsOf(cell *Cell) string
+	ContentsOf(cell *mfp.Cell) string
 }
 
 // There are a few edge cases
@@ -17,6 +19,6 @@ func (g ASCIIGrid) String() string {
 	return gridToString(g)
 }
 
-func (g ASCIIGrid) ContentsOf(cell *Cell) string {
+func (g ASCIIGrid) ContentsOf(cell *mfp.Cell) string {
 	return " "
 }

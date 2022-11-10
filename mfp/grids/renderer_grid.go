@@ -1,8 +1,9 @@
-package mfp
+package grids
 
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"image/color"
+	"mazes-for-programmers/mfp"
 )
 
 type RendererGrid struct {
@@ -13,10 +14,10 @@ type RendererGrid struct {
 type RendererGridHandler interface {
 	ASCIIGridHandler
 	ToTexture(cellSize, thickness int) *rl.RenderTexture2D
-	BackgroundColorForCell(cell *Cell) color.RGBA
+	BackgroundColorForCell(cell *mfp.Cell) color.RGBA
 }
 
-func (g *RendererGrid) BackgroundColorForCell(cell *Cell) rl.Color {
+func (g *RendererGrid) BackgroundColorForCell(cell *mfp.Cell) rl.Color {
 	return rl.Blank
 }
 

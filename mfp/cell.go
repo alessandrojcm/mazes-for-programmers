@@ -3,8 +3,8 @@ package mfp
 import "errors"
 
 type Cell struct {
-	north, south, east, west *Cell
-	row, column              int
+	North, South, East, West *Cell
+	Row, Column              int
 	links                    map[*Cell]bool
 }
 
@@ -19,11 +19,11 @@ type CellHandler interface {
 
 func NewCell(row, column int) (*Cell, error) {
 	if row < 0 || column < 0 {
-		return &Cell{}, errors.New("row and column cannot be negative")
+		return &Cell{}, errors.New("Row and Column cannot be negative")
 	}
 	cell := Cell{
-		row:    row,
-		column: column,
+		Row:    row,
+		Column: column,
 	}
 	cell.links = make(map[*Cell]bool)
 	return &cell, nil
@@ -33,17 +33,17 @@ func (receiver *Cell) Neighbors() []*Cell {
 	// Make with capacity to 4 elements at most
 	neighbors := make([]*Cell, 0, 4)
 
-	if receiver.north != nil {
-		neighbors = append(neighbors, receiver.north)
+	if receiver.North != nil {
+		neighbors = append(neighbors, receiver.North)
 	}
-	if receiver.east != nil {
-		neighbors = append(neighbors, receiver.east)
+	if receiver.East != nil {
+		neighbors = append(neighbors, receiver.East)
 	}
-	if receiver.south != nil {
-		neighbors = append(neighbors, receiver.south)
+	if receiver.South != nil {
+		neighbors = append(neighbors, receiver.South)
 	}
-	if receiver.west != nil {
-		neighbors = append(neighbors, receiver.west)
+	if receiver.West != nil {
+		neighbors = append(neighbors, receiver.West)
 	}
 	return neighbors
 }
@@ -99,11 +99,11 @@ func (receiver *Cell) Distances() Distance {
 
 		for _, cell := range frontier {
 			for _, linked := range cell.Links() {
-				_, isLinked := distances.cells[linked]
+				_, isLinked := distances.Cells[linked]
 				if isLinked {
 					continue
 				}
-				distances.cells[linked] = distances.cells[cell] + 1
+				distances.Cells[linked] = distances.Cells[cell] + 1
 				newFrontier = append(newFrontier, linked)
 			}
 		}

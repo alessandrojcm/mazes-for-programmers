@@ -1,7 +1,8 @@
-package mfp
+package grids
 
 import (
 	"fmt"
+	"mazes-for-programmers/mfp"
 	"strings"
 )
 
@@ -17,18 +18,18 @@ func gridToString(g ASCIIGridHandler) string {
 			var eastBoundary, southBoundary string
 
 			if cell == nil {
-				cell = &Cell{
-					row:    -1,
-					column: -1,
+				cell = &mfp.Cell{
+					Row:    -1,
+					Column: -1,
 				}
 			}
-			if cell.Linked(cell.east) {
+			if cell.Linked(cell.East) {
 				eastBoundary = " "
 			} else {
 				eastBoundary = "│"
 			}
 			top = top + body + eastBoundary
-			if cell.Linked(cell.south) {
+			if cell.Linked(cell.South) {
 				southBoundary = "   "
 			} else {
 				southBoundary = "───"
@@ -41,13 +42,13 @@ func gridToString(g ASCIIGridHandler) string {
 				bottom = bottom + southBoundary + "┘"
 				continue
 			}
-			if cell.Linked(cell.south) && cell.Linked(cell.east) {
+			if cell.Linked(cell.South) && cell.Linked(cell.East) {
 				corner = "╷"
 			}
-			if !cell.Linked(cell.south) && cell.Linked(cell.east) {
+			if !cell.Linked(cell.South) && cell.Linked(cell.East) {
 				corner = "─"
 			}
-			if cell.Linked(cell.south) && !cell.Linked(cell.east) {
+			if cell.Linked(cell.South) && !cell.Linked(cell.East) {
 				if index == g.Rows()-1 {
 					corner = "─"
 				} else if i == len(row)-1 {
@@ -56,7 +57,7 @@ func gridToString(g ASCIIGridHandler) string {
 					corner = "╷"
 				}
 			}
-			if !cell.Linked(cell.south) && !cell.Linked(cell.east) {
+			if !cell.Linked(cell.South) && !cell.Linked(cell.East) {
 				if index == g.Rows()-1 {
 					corner = "┴"
 				} else {

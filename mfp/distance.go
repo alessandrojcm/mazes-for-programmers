@@ -2,10 +2,10 @@ package mfp
 
 type Distance struct {
 	root  *Cell
-	cells map[*Cell]int
+	Cells map[*Cell]int
 }
 
-// DistanceHandler - interface to implement Distance between cells
+// DistanceHandler - interface to implement Distance between Cells
 type DistanceHandler interface {
 	PathTo(goal *Cell) Distance
 	Max() (maxCell *Cell, maxDistance int)
@@ -16,7 +16,7 @@ func NewDistance(root *Cell) Distance {
 	cells[root] = 0
 	return Distance{
 		root:  root,
-		cells: cells,
+		Cells: cells,
 	}
 }
 
@@ -25,16 +25,16 @@ func (d *Distance) PathTo(goal *Cell) Distance {
 	current := goal
 
 	breadcrumbs := NewDistance(d.root)
-	breadcrumbs.cells[current] = d.cells[current]
+	breadcrumbs.Cells[current] = d.Cells[current]
 
 	for current != d.root {
 		for _, neighbour := range current.Links() {
-			neighbourDistance, isNeighbourLinked := d.cells[neighbour]
-			currentDistance, isCurrentLinked := d.cells[current]
+			neighbourDistance, isNeighbourLinked := d.Cells[neighbour]
+			currentDistance, isCurrentLinked := d.Cells[current]
 			if !isNeighbourLinked || !isCurrentLinked {
 				continue
 			} else if neighbourDistance < currentDistance {
-				breadcrumbs.cells[neighbour] = d.cells[neighbour]
+				breadcrumbs.Cells[neighbour] = d.Cells[neighbour]
 				current = neighbour
 				break
 			}
@@ -47,7 +47,7 @@ func (d *Distance) PathTo(goal *Cell) Distance {
 func (d *Distance) Max() (maxCell *Cell, maxDistance int) {
 	maxCell, maxDistance = d.root, 0
 
-	for cell, distance := range d.cells {
+	for cell, distance := range d.Cells {
 		if distance > maxDistance {
 			maxCell = cell
 			maxDistance = distance

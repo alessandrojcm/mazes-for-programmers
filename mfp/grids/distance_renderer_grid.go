@@ -1,17 +1,18 @@
-package mfp
+package grids
 
 import (
 	"fmt"
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"image/color"
+	"mazes-for-programmers/mfp"
 )
 
 type DistanceRenderGrid struct {
 	*DistanceGrid
 }
 
-func (g *DistanceRenderGrid) BackgroundColorForCell(cell *Cell) color.RGBA {
-	distance, isOk := g.Distances.cells[cell]
+func (g *DistanceRenderGrid) BackgroundColorForCell(cell *mfp.Cell) color.RGBA {
+	distance, isOk := g.Distances.Cells[cell]
 	if !isOk {
 		return rl.DarkGreen
 	}
@@ -32,7 +33,7 @@ func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int) *rl.RenderTextur
 	for cell := range g.DistanceGrid.EachCell() {
 		// reducing the overall surface of the square since they get painted
 		// after the lines, otherwise they would get painted on top of the lines
-		x, y := int32((cell.column*cellSize)+offset), int32((cell.row*cellSize)+offset)
+		x, y := int32((cell.Column*cellSize)+offset), int32((cell.Row*cellSize)+offset)
 		rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), g.BackgroundColorForCell(cell))
 	}
 	rl.EndDrawing()

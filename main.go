@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"mfp/commands"
-	mfp2 "mfp/mfp"
+	"mazes-for-programmers/commands"
+	mfp2 "mazes-for-programmers/mfp/algorithms"
 	"os"
 	"runtime"
 )
@@ -13,9 +13,8 @@ import (
 // TODO: add flag to print ascii (make sure to require at least one of the showing flags)
 // TODO: add flags to specify the start & end cell (maybe --solve-from and --solve-to or --solve=from-to idk)
 // TODO: add mode to paint background with weight color
-// TODO: refactor file structure
 // TODO: add flag to paint the longest path (override --distance and require either longest or from-to solved)
-// TODO: add loggin
+// TODO: add logging
 // TODO: add timer
 func main() {
 	// Raylib uses OpenGL and OpenGL expects every

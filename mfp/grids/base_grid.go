@@ -1,24 +1,25 @@
-package mfp
+package grids
 
 import (
 	"errors"
 	"math/rand"
+	"mazes-for-programmers/mfp"
 	"time"
 )
 
 type BaseGrid struct {
 	rows, columns int
-	cells         [][]*Cell
+	cells         [][]*mfp.Cell
 }
 
 type BaseGridHandler interface {
 	PrepareGrid() error
 	ConfigureCells() error
-	CellAt(row, column int) (*Cell, error)
+	CellAt(row, column int) (*mfp.Cell, error)
 	Size() int
-	RandomCell() (*Cell, error)
-	EachRow() chan []*Cell
-	EachCell() chan *Cell
+	RandomCell() (*mfp.Cell, error)
+	EachRow() chan []*mfp.Cell
+	EachCell() chan *mfp.Cell
 	Empty() bool
 	Rows() int
 	Columns() int
@@ -36,19 +37,19 @@ func (g *BaseGrid) Empty() bool {
 	return g.rows == 0 || g.columns == 0 || len(g.cells) == 0
 }
 
-func (g *BaseGrid) CellAt(row, column int) (*Cell, error) {
+func (g *BaseGrid) CellAt(row, column int) (*mfp.Cell, error) {
 	if row < 0 || row > g.rows-1 || column < 0 || column > g.columns-1 {
-		return &Cell{}, errors.New("Cell out of bounds")
+		return &mfp.Cell{}, errors.New("Cell out of bounds")
 	}
 	return g.cells[row][column], nil
 }
 
 func (g *BaseGrid) PrepareGrid() error {
-	g.cells = make([][]*Cell, g.rows)
+	g.cells = make([][]*mfp.Cell, g.rows)
 	for row := range g.cells {
-		g.cells[row] = make([]*Cell, g.columns)
+		g.cells[row] = make([]*mfp.Cell, g.columns)
 		for column := range g.cells[row] {
-			cell, err := NewCell(row, column)
+			cell, err := mfp.NewCell(row, column)
 			if err != nil {
 				return err
 			}
@@ -61,38 +62,38 @@ func (g *BaseGrid) PrepareGrid() error {
 func (g *BaseGrid) ConfigureCells() error {
 	for _, row := range g.cells {
 		for _, cell := range row {
-			rowNum, colNum := cell.row, cell.column
+			rowNum, colNum := cell.Row, cell.Column
 			// we need to do boundary checking,
 			// there is no operator overriding
 			// in Go so let's do it the old-fashioned way
 			// if any calculation goes out of bounds
 			// just assign nil
 			if rowNum-1 < 0 {
-				cell.north = nil
+				cell.North = nil
 			} else {
-				cell.north = g.cells[rowNum-1][colNum]
+				cell.North = g.cells[rowNum-1][colNum]
 			}
 			if rowNum+1 > g.rows-1 {
-				cell.south = nil
+				cell.South = nil
 			} else {
-				cell.south = g.cells[rowNum+1][colNum]
+				cell.South = g.cells[rowNum+1][colNum]
 			}
 			if colNum-1 < 0 {
-				cell.west = nil
+				cell.West = nil
 			} else {
-				cell.west = g.cells[rowNum][colNum-1]
+				cell.West = g.cells[rowNum][colNum-1]
 			}
 			if colNum+1 > g.columns-1 {
-				cell.east = nil
+				cell.East = nil
 			} else {
-				cell.east = g.cells[rowNum][colNum+1]
+				cell.East = g.cells[rowNum][colNum+1]
 			}
 		}
 	}
 	return nil
 }
 
-func (g *BaseGrid) RandomCell() (*Cell, error) {
+func (g *BaseGrid) RandomCell() (*mfp.Cell, error) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	row, column := r.Intn(g.rows), r.Intn(g.columns)
 
@@ -103,8 +104,8 @@ func (g *BaseGrid) Size() int {
 	return g.rows * g.columns
 }
 
-func (g *BaseGrid) EachRow() chan []*Cell {
-	rowChan := make(chan []*Cell)
+func (g *BaseGrid) EachRow() chan []*mfp.Cell {
+	rowChan := make(chan []*mfp.Cell)
 	go func() {
 		for _, row := range g.cells {
 			rowChan <- row
@@ -114,8 +115,8 @@ func (g *BaseGrid) EachRow() chan []*Cell {
 	return rowChan
 }
 
-func (g *BaseGrid) EachCell() chan *Cell {
-	cellChan := make(chan *Cell)
+func (g *BaseGrid) EachCell() chan *mfp.Cell {
+	cellChan := make(chan *mfp.Cell)
 	go func() {
 		for row := 0; row < g.rows; row++ {
 			for column := 0; column < g.columns; column++ {

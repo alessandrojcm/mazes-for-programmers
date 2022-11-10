@@ -1,6 +1,9 @@
-package mfp
+package grids
 
-import "errors"
+import (
+	"errors"
+	"mazes-for-programmers/mfp"
+)
 
 type GridBuilder struct {
 	rows, columns int
@@ -62,7 +65,7 @@ func (g *GridBuilder) BuildGridWithDistance() (DistanceGrid, error) {
 	asciiGrid, err := g.BuildASCIIGrid()
 	return DistanceGrid{
 		&asciiGrid,
-		Distance{},
+		mfp.Distance{},
 	}, err
 }
 
