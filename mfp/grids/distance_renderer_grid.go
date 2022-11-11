@@ -31,8 +31,6 @@ func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int) *rl.RenderTextur
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.White)
 	for cell := range g.DistanceGrid.EachCell() {
-		// reducing the overall surface of the square since they get painted
-		// after the lines, otherwise they would get painted on top of the lines
 		x, y := int32((cell.Column*cellSize)+offset), int32((cell.Row*cellSize)+offset)
 		rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), g.BackgroundColorForCell(cell))
 	}

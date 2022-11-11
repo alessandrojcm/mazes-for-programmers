@@ -4,6 +4,7 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/spf13/cobra"
 	"mazes-for-programmers/mfp/grids"
+	"os"
 )
 
 var showCmd = &cobra.Command{
@@ -12,30 +13,46 @@ var showCmd = &cobra.Command{
 	ValidArgs: validArgs,
 	Args:      cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
 	Run: func(cmd *cobra.Command, args []string) {
+		var name string
 		rows, _ := cmd.Flags().GetInt("rows")
 		columns, _ := cmd.Flags().GetInt("columns")
 		builder := grids.NewBuilder(rows, columns)
-		grid, _ := builder.BuildGridLineRenderer()
-		name := handleAlgorithms(cmd, args, grid)
 
-		target := grid.ToTexture(cellSizes, thickness)
-
+		// solve for start & end
+		if len(startCell) > 0 && len(endCell) > 0 {
+			grid, _ := builder.BuildGridWithDistanceRenderer()
+			n, solution, err := handlePathSolve(grid, handleAlgorithms(cmd, args, grid))
+			name = n
+			if err != nil {
+				cmd.Println(err)
+				os.Exit(-1)
+			}
+			grid.Distances = solution
+			// create texture
+			target = grid.ToTexture(cellSizes, thickness)
+			// Normal grid
+		} else {
+			grid, _ := builder.BuildGridLineRenderer()
+			name = handleAlgorithms(cmd, args, grid)
+			target = grid.ToTexture(cellSizes, thickness)
+		}
 		rl.ClearWindowState(rl.FlagWindowHidden)
 		rl.SetWindowTitle(name)
-		defer rl.UnloadTexture(target.Texture)
 		rl.SetTargetFPS(60)
 		for !rl.WindowShouldClose() {
 			rl.BeginDrawing()
 			rl.DrawTexture(target.Texture, 0, 0, rl.White)
 			rl.EndDrawing()
 		}
-		defer rl.UnloadRenderTexture(*target)
-		defer rl.CloseWindow()
+	},
+	PersistentPostRun: func(cmd *cobra.Command, args []string) {
+		postRenderCleanup()
 	},
 }
 
 func InitShow(cmd *cobra.Command) {
-	addFlags(showCmd)
+	addRenderingFlags(showCmd)
+	addSolvingFlags(showCmd)
 
 	cmd.AddCommand(showCmd)
 }

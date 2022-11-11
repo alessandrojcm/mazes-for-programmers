@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"mazes-for-programmers/mfp/grids"
+	"os"
 )
 
 var printCmd = &cobra.Command{
@@ -17,9 +18,21 @@ var printCmd = &cobra.Command{
 		columns, _ := cmd.Flags().GetInt("columns")
 		builder := grids.NewBuilder(rows, columns)
 
-		grid, _ := builder.BuildASCIIGrid()
-		name := handleAlgorithms(cmd, args, grid)
-		fmt.Println(name, grid)
+		// solve for start & end
+		if len(startCell) > 0 && len(endCell) > 0 {
+			grid, _ := builder.BuildGridWithDistance()
+			name, solution, err := handlePathSolve(grid, handleAlgorithms(cmd, args, grid))
+			if err != nil {
+				cmd.Println(err)
+				os.Exit(-1)
+			}
+			grid.Distances = solution
+			fmt.Println(name, "\n", grid)
+		} else {
+			grid, _ := builder.BuildASCIIGrid()
+			name := handleAlgorithms(cmd, args, grid)
+			fmt.Println(name, "\n", grid)
+		}
 	},
 }
 
@@ -43,6 +56,8 @@ var distancesCmd = &cobra.Command{
 }
 
 func InitPrint(cmd *cobra.Command) {
+	// We do not add the flags to distance since that command renders all the values for the cells
+	addSolvingFlags(printCmd)
 	printCmd.AddCommand(distancesCmd)
 	cmd.AddCommand(printCmd)
 }
