@@ -2,6 +2,7 @@ package grids
 
 import (
 	"errors"
+	"log"
 	"math/rand"
 	"mazes-for-programmers/mfp"
 	"time"
@@ -39,13 +40,15 @@ func (g *BaseGrid) Empty() bool {
 
 func (g *BaseGrid) CellAt(row, column int) (*mfp.Cell, error) {
 	if row < 0 || row > g.rows-1 || column < 0 || column > g.columns-1 {
-		return &mfp.Cell{}, errors.New("Cell out of bounds")
+		return &mfp.Cell{}, errors.New("cell out of bounds")
 	}
 	return g.cells[row][column], nil
 }
 
 func (g *BaseGrid) PrepareGrid() error {
 	g.cells = make([][]*mfp.Cell, g.rows)
+	log.Printf("starting to prepare grid with %dx%d dimention", g.rows, g.columns)
+	defer mfp.TimeTrack(time.Now(), "grid preparation")
 	for row := range g.cells {
 		g.cells[row] = make([]*mfp.Cell, g.columns)
 		for column := range g.cells[row] {
@@ -60,6 +63,8 @@ func (g *BaseGrid) PrepareGrid() error {
 }
 
 func (g *BaseGrid) ConfigureCells() error {
+	log.Printf("starting to configure grid with %dx%d dimention", g.rows, g.columns)
+	defer mfp.TimeTrack(time.Now(), "grid configuration")
 	for _, row := range g.cells {
 		for _, cell := range row {
 			rowNum, colNum := cell.Row, cell.Column

@@ -1,6 +1,10 @@
 package mfp
 
-import "errors"
+import (
+	"errors"
+	"log"
+	"time"
+)
 
 type Cell struct {
 	North, South, East, West *Cell
@@ -19,7 +23,7 @@ type CellHandler interface {
 
 func NewCell(row, column int) (*Cell, error) {
 	if row < 0 || column < 0 {
-		return &Cell{}, errors.New("Row and Column cannot be negative")
+		return &Cell{}, errors.New("row and Column cannot be negative")
 	}
 	cell := Cell{
 		Row:    row,
@@ -93,7 +97,8 @@ func (receiver *Cell) Unlink(cell *Cell, bidi bool) error {
 func (receiver *Cell) Distances() Distance {
 	distances := NewDistance(receiver)
 	frontier := []*Cell{receiver}
-
+	log.Printf("starting shortest path calculation with Dijkstra for cell %dx%d", receiver.Row, receiver.Column)
+	defer TimeTrack(time.Now(), "Dijkstra")
 	for len(frontier) > 0 {
 		var newFrontier []*Cell
 

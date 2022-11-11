@@ -1,6 +1,11 @@
 package grids
 
-import rl "github.com/gen2brain/raylib-go/raylib"
+import (
+	rl "github.com/gen2brain/raylib-go/raylib"
+	"log"
+	"mazes-for-programmers/mfp"
+	"time"
+)
 
 type TiledGrid struct {
 	*RendererGrid
@@ -17,6 +22,8 @@ func (g *TiledGrid) ToTexture(cellSize, thickness int) *rl.RenderTexture2D {
 	rl.BeginTextureMode(target)
 	rl.ClearBackground(background)
 	rl.BeginDrawing()
+	log.Printf("starting to render tiled grid with %dx%d dimention", g.rows, g.columns)
+	defer mfp.TimeTrack(time.Now(), "grid rendering")
 	for cell := range g.EachCell() {
 		x, y := int32(cell.Column*cellSize), int32(cell.Row*cellSize)
 		center := rl.NewVector2(float32(x+(int32(cellSize)/2)), float32(y+(int32(cellSize))/2))

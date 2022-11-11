@@ -1,6 +1,7 @@
 package algorithms
 
 import (
+	"log"
 	"math/rand"
 	"mazes-for-programmers/mfp"
 	"mazes-for-programmers/mfp/grids"
@@ -10,6 +11,8 @@ import (
 func SideWinder(grid grids.BaseGridHandler) {
 	var err error
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	log.Printf("starting sidewinder run for %dx%d grid", grid.Rows(), grid.Columns())
+	defer mfp.TimeTrack(time.Now(), "binary tree run")
 	for row := range grid.EachRow() {
 		run := make([]*mfp.Cell, 0, len(row))
 

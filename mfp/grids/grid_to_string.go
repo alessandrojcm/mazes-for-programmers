@@ -2,13 +2,17 @@ package grids
 
 import (
 	"fmt"
+	"log"
 	"mazes-for-programmers/mfp"
 	"strings"
+	"time"
 )
 
 func gridToString(g ASCIIGridHandler) string {
 	output := "┌" + strings.Repeat("────", g.Columns()-1) + "───┐" + "\n"
 	index := 0
+	log.Printf("starting to print grid with %dx%d dimention", g.Rows(), g.Columns())
+	defer mfp.TimeTrack(time.Now(), "grid printing")
 	for row := range g.EachRow() {
 		top, bottom := "│", "│"
 		for i := range row {

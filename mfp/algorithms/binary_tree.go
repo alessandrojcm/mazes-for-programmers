@@ -1,6 +1,7 @@
 package algorithms
 
 import (
+	"log"
 	"math/rand"
 	"mazes-for-programmers/mfp"
 	"mazes-for-programmers/mfp/grids"
@@ -13,6 +14,8 @@ const SouthAndEast = "southeast"
 
 func BinaryTree(grid grids.BaseGridHandler, bias string) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	log.Printf("starting binary tree run for %dx%d grid", grid.Rows(), grid.Columns())
+	defer mfp.TimeTrack(time.Now(), "binary tree run")
 	for cell := range grid.EachCell() {
 		neighbors := make([]*mfp.Cell, 0, grid.Size())
 		switch bias {

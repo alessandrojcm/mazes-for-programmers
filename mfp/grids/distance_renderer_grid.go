@@ -4,7 +4,9 @@ import (
 	"fmt"
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"image/color"
+	"log"
 	"mazes-for-programmers/mfp"
+	"time"
 )
 
 type DistanceRenderGrid struct {
@@ -28,6 +30,8 @@ func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int) *rl.RenderTextur
 
 	rl.BeginTextureMode(target)
 	defer rl.EndTextureMode()
+	log.Printf("starting to render distenced grid with %dx%d dimention", g.rows, g.columns)
+	defer mfp.TimeTrack(time.Now(), "grid rendering")
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.White)
 	for cell := range g.DistanceGrid.EachCell() {

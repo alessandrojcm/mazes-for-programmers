@@ -3,7 +3,9 @@ package grids
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"image/color"
+	"log"
 	"mazes-for-programmers/mfp"
+	"time"
 )
 
 type RendererGrid struct {
@@ -33,6 +35,8 @@ func (g *RendererGrid) ToTexture(cellSize, thickness int) *rl.RenderTexture2D {
 	rl.ClearBackground(background)
 	offset := thickness / 2
 	wall := rl.Black
+	log.Printf("starting to render grid with %dx%d dimention", g.rows, g.columns)
+	defer mfp.TimeTrack(time.Now(), "grid rendering")
 	drawMazeLines(g.EachCell(), cellSize, thickness, offset, wall)
 
 	return &target

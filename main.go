@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"io"
+	"log"
 	"mazes-for-programmers/commands"
 	mfp2 "mazes-for-programmers/mfp/algorithms"
 	"os"
@@ -10,11 +12,8 @@ import (
 )
 
 var debug bool
-var rootCmd = &cobra.Command{Use: "mfp", Aliases: []string{"mfp"}, Run: func(cmd *cobra.Command, args []string) {
-	if debug {
-		os.Setenv("DEBUG", "True")
-	}
-},
+var rootCmd = &cobra.Command{
+	Use: "mfp",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		rows, _ := cmd.Flags().GetInt("rows")
 		columns, _ := cmd.Flags().GetInt("columns")
@@ -23,12 +22,19 @@ var rootCmd = &cobra.Command{Use: "mfp", Aliases: []string{"mfp"}, Run: func(cmd
 			os.Exit(-1)
 		}
 	},
+	Aliases: []string{"mfp"},
+	Run: func(cmd *cobra.Command, args []string) {
+		if debug {
+			os.Setenv("DEBUG", "True")
+			log.SetFlags(log.Ldate)
+		} else {
+			log.SetOutput(io.Discard)
+		}
+	},
 }
 
 // TODO: print weights of the cells for the show command(s)
 // TODO: add mode to paint background with weight color
-// TODO: add logging
-// TODO: add timer
 // TODO: add flag to paint the longest path (override --distance and require either longest or from-to solved)
 func main() {
 	// Raylib uses OpenGL and OpenGL expects every
@@ -41,7 +47,7 @@ func main() {
 	rootCmd.PersistentFlags().StringP("bias", "b", "", "set the bias for the algorithm, options are: "+mfp2.SouthAndWest+", "+
 		", "+mfp2.NorthAndWest+
 		mfp2.SouthAndEast)
-	rootCmd.Flags().BoolVarP(&debug, "debug", "d", false, "show debug grid")
+	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "show debug grid")
 	commands.InitPrint(rootCmd)
 	commands.InitShow(rootCmd)
 	commands.InitExport(rootCmd)
