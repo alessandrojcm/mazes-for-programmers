@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/spf13/cobra"
 	"io"
 	"log"
@@ -21,21 +22,19 @@ var rootCmd = &cobra.Command{
 			cmd.PrintErrln("rows and columns need to be greater than 0.")
 			os.Exit(-1)
 		}
-	},
-	Aliases: []string{"mfp"},
-	Run: func(cmd *cobra.Command, args []string) {
 		if debug {
 			os.Setenv("DEBUG", "True")
 			log.SetFlags(log.Ldate)
 		} else {
+			rl.SetTraceLog(rl.LogNone)
 			log.SetOutput(io.Discard)
 		}
 	},
+	Aliases: []string{"mfp"},
 }
 
 // TODO: print weights of the cells for the show command(s)
 // TODO: add mode to paint background with weight color
-// TODO: add flag to paint the longest path (override --distance and require either longest or from-to solved)
 func main() {
 	// Raylib uses OpenGL and OpenGL expects every
 	// call to be main on a single thread

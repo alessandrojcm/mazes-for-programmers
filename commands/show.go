@@ -18,8 +18,19 @@ var showCmd = &cobra.Command{
 		columns, _ := cmd.Flags().GetInt("columns")
 		builder := grids.NewBuilder(rows, columns)
 
-		// solve for start & end
-		if len(startCell) > 0 && len(endCell) > 0 {
+		if longestPath {
+			grid, _ := builder.BuildGridWithDistanceRenderer()
+			n, solution, err := handleLongestPath(grid, handleAlgorithms(cmd, args, grid))
+			name = n
+			if err != nil {
+				cmd.Println(err)
+				os.Exit(-1)
+			}
+			grid.Distances = solution
+			// create texture
+			target = grid.ToTexture(cellSizes, thickness)
+			// Normal grid
+		} else if len(startCell) > 0 && len(endCell) > 0 {
 			grid, _ := builder.BuildGridWithDistanceRenderer()
 			n, solution, err := handlePathSolve(grid, handleAlgorithms(cmd, args, grid))
 			name = n

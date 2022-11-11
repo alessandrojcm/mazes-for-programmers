@@ -10,6 +10,7 @@ import (
 
 var cellSizes, thickness int
 var startCell, endCell string
+var longestPath bool
 
 func addRenderingFlags(cmd *cobra.Command) {
 	cmd.Flags().IntVarP(&cellSizes, "cellsize", "s", 10, "sets the size of the cells")
@@ -20,9 +21,12 @@ func addSolvingFlags(cmds ...*cobra.Command) {
 	for _, cmd := range cmds {
 		cmd.Flags().StringVarP(&startCell, "solve-from", "f", "", "Set the starting cell to solve the maze from in the RowxColumn format")
 		cmd.Flags().StringVarP(&endCell, "solve-to", "t", "", "Set the ending cell to solve the maze to in the RowxColumn format")
+		cmd.Flags().BoolVarP(&longestPath, "longest-path", "p", false, "draw the longest path in the maze")
 		cmd.MarkFlagsRequiredTogether("solve-from", "solve-to")
+		cmd.MarkFlagsMutuallyExclusive("solve-to", "longest-path")
+		cmd.MarkFlagsMutuallyExclusive("solve-from", "longest-path")
 
-		cmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
+		cmd.PreRun = func(cmd *cobra.Command, args []string) {
 			rows, _ := cmd.Flags().GetInt("rows")
 			columns, _ := cmd.Flags().GetInt("columns")
 			validRange := regexp.MustCompile(fmt.Sprintf("(?mi)[0-%d]{1,%d}x[0-%d]{1,%d}", rows-1, len(strconv.Itoa(rows-1)), columns-1, len(strconv.Itoa(columns-1))))

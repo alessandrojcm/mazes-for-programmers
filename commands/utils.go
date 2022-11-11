@@ -56,6 +56,18 @@ func handlePathSolve(grid grids.BaseGridHandler, name string) (string, mfp.Dista
 	return fmt.Sprintf("%s from %s to %s", name, startCell, endCell), distances.PathTo(end), nil
 }
 
+func handleLongestPath(grid grids.BaseGridHandler, name string) (string, mfp.Distance, error) {
+	start, err := grid.CellAt(0, 0)
+	d := start.Distances()
+	newStart, _ := d.Max()
+	newDistances := newStart.Distances()
+	goal, _ := newDistances.Max()
+	if err != nil {
+		return name, newDistances.PathTo(goal), err
+	}
+	return fmt.Sprintf("%slongest path", name), newDistances.PathTo(goal), nil
+}
+
 func postRenderCleanup() {
 	rl.UnloadTexture(target.Texture)
 	rl.UnloadRenderTexture(*target)
