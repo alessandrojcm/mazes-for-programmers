@@ -4,10 +4,8 @@ import (
 	"fmt"
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/spf13/cobra"
-	"mazes-for-programmers/flags"
 	"mazes-for-programmers/mfp/algorithms"
 	"mazes-for-programmers/mfp/grids"
-	"time"
 )
 
 var BinaryTree = &cobra.Command{
@@ -58,13 +56,6 @@ var BinaryTree = &cobra.Command{
 			var target *rl.RenderTexture2D
 			var err error
 
-			var name string
-			if distance {
-				name = fmt.Sprintf("%s-%vrowX%vcol-%s-%v-with-distance.png", "sidewinder", rows, columns, bias, time.Now().UnixNano())
-
-			} else {
-				name = fmt.Sprintf("%s-%vrowX%vcol-%s-%v.png", "sidewinder", rows, columns, bias, time.Now().UnixNano())
-			}
 			if colorTiles {
 				rendererGrid, _ := builder.BuildGridTiledRenderer()
 				target = rendererGrid.ToTexture(cellSize, wallThickness)
@@ -74,12 +65,6 @@ var BinaryTree = &cobra.Command{
 			}
 			if err != nil {
 				panic(err)
-			}
-			if export {
-				flags.Export(target, name)
-			}
-			if show {
-				flags.Show(target, name)
 			}
 			defer rl.UnloadRenderTexture(*target)
 			defer rl.CloseWindow()
