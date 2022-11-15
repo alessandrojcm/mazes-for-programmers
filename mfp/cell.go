@@ -3,6 +3,7 @@ package mfp
 import (
 	"errors"
 	"log"
+	"os"
 	"time"
 )
 
@@ -92,9 +93,35 @@ func (receiver *Cell) Unlink(cell *Cell, bidi bool) error {
 	return nil
 }
 
-// Distances A simplified implementation of Dijkstra's algorithm
-// TODO: implement bfs
+// Distances Gets the weight of the grid using Dijkstra's or BFS (defaults to BFS)
 func (receiver *Cell) Distances() Distance {
+	// Obscure flag to chose algorithm, for comparison purposes
+	alg := os.Getenv("LP_ALG")
+	if alg == "dijkstra" {
+		return dijkstra(receiver)
+	}
+	var queue = []*Cell{receiver}
+	distances := NewDistance(receiver)
+	distances.Cells[receiver] = 0
+
+	log.Printf("Starting weight labelling with bfs")
+	defer TimeTrack(time.Now(), "bfs")
+	for len(queue) > 0 {
+		current := queue[0]
+		queue = queue[1:]
+		for _, link := range current.Links() {
+			_, isVisited := distances.Cells[link]
+			if isVisited {
+				continue
+			}
+			distances.Cells[link] = distances.Cells[current] + 1
+			queue = append(queue, link)
+		}
+	}
+	return distances
+}
+
+func dijkstra(receiver *Cell) Distance {
 	distances := NewDistance(receiver)
 	frontier := []*Cell{receiver}
 	log.Printf("starting shortest path calculation with Dijkstra for cell %dx%d", receiver.Row, receiver.Column)

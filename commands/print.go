@@ -61,7 +61,7 @@ var distancesCmd = &cobra.Command{
 		distances := start.Distances()
 		grid.Distances = distances
 
-		fmt.Println(name, grid)
+		fmt.Println(name, "\n", grid)
 	},
 }
 

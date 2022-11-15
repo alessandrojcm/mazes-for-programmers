@@ -13,7 +13,7 @@ var startCell, endCell string
 var longestPath bool
 
 func addRenderingFlags(cmd *cobra.Command) {
-	cmd.Flags().IntVarP(&cellSizes, "cellsize", "s", 10, "sets the size of the cells")
+	cmd.Flags().IntVarP(&cellSizes, "cellsize", "s", 60, "sets the size of the cells")
 	cmd.Flags().IntVarP(&thickness, "thickness", "w", 1, "sets the thickness of the walls for the exported images")
 }
 
