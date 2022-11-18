@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// printCmd -- sub cmd utility to print an ASCII maze
 var printCmd = &cobra.Command{
 	Use:       "print",
 	Short:     "Prints a maze wih ASCII characters",
@@ -18,8 +19,8 @@ var printCmd = &cobra.Command{
 		columns, _ := cmd.Flags().GetInt("columns")
 		builder := grids.NewBuilder(rows, columns)
 
+		// print longest path
 		if longestPath {
-			// solve for start & end
 			grid, _ := builder.BuildGridWithDistance()
 			name, solution, err := handleLongestPath(grid, handleAlgorithms(cmd, args, grid))
 			if err != nil {
@@ -39,6 +40,7 @@ var printCmd = &cobra.Command{
 			grid.Distances = solution
 			fmt.Println(name, "\n", grid)
 		} else {
+			// print normal maze
 			grid, _ := builder.BuildASCIIGrid()
 			name := handleAlgorithms(cmd, args, grid)
 			fmt.Println(name, "\n", grid)
@@ -46,6 +48,7 @@ var printCmd = &cobra.Command{
 	},
 }
 
+// distancesCmd -- sub command to print the weight of each cell
 var distancesCmd = &cobra.Command{
 	Use:     "distances",
 	Short:   "Prints the distance value of every cell",

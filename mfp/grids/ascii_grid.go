@@ -2,19 +2,18 @@ package grids
 
 import "mazes-for-programmers/mfp"
 
+// ASCIIGrid -- A grid that implementes the Stringer interface
 type ASCIIGrid struct {
 	*BaseGrid
 }
 
+// ASCIIGridHandler -- Defines the interface for a printable grid
 type ASCIIGridHandler interface {
 	BaseGridHandler
+	// ContentsOf Get the content of the cell (what the cell should print inside it)
 	ContentsOf(cell *mfp.Cell) string
 }
 
-// There are a few edge cases
-// which I cannot quite figure out yet
-// since they'll require a cell to
-// know the boundaries of the other cells
 func (g ASCIIGrid) String() string {
 	return gridToString(g)
 }

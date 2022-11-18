@@ -19,6 +19,7 @@ var validColors = map[string]rl.Color{
 	"blue":  rl.Blue,
 }
 
+// addRendering-flags -- helper function to add all the flags for the "show" subcommand
 func addRenderingFlags(cmd *cobra.Command) {
 	cmd.Flags().IntVarP(&cellSizes, "cellsize", "s", 60, "sets the size of the cells")
 	cmd.Flags().IntVarP(&thickness, "thickness", "w", 1, "sets the thickness of the walls for the exported images")
@@ -39,6 +40,7 @@ func addRenderingFlags(cmd *cobra.Command) {
 	}
 }
 
+// addSolvingFlags -- helper function to add all the flags common to finding a solution for the maze
 func addSolvingFlags(cmds ...*cobra.Command) {
 	for _, cmd := range cmds {
 		cmd.Flags().StringVarP(&startCell, "solve-from", "f", "", "Set the starting cell to solve the maze from in the RowxColumn format")

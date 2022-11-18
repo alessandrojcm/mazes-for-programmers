@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// showCmd -- sub command cli
 var showCmd = &cobra.Command{
 	Use:       "show",
 	Short:     "Renders the maze to a window",
@@ -29,8 +30,8 @@ var showCmd = &cobra.Command{
 			grid.Distances = solution
 			// create texture
 			target = grid.ToTexture(cellSizes, thickness)
-			// Normal grid
 		} else if len(startCell) > 0 && len(endCell) > 0 {
+			// solve for start & end
 			grid, _ := builder.BuildGridWithDistanceRenderer(validColors[backgroundCol])
 			n, solution, err := handlePathSolve(grid, handleAlgorithms(cmd, args, grid))
 			name = n
@@ -41,8 +42,8 @@ var showCmd = &cobra.Command{
 			grid.Distances = solution
 			// create texture
 			target = grid.ToTexture(cellSizes, thickness)
-			// Normal grid
 		} else {
+			// Normal grid
 			grid, _ := builder.BuildGridLineRenderer()
 			name = handleAlgorithms(cmd, args, grid)
 			target = grid.ToTexture(cellSizes, thickness)

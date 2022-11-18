@@ -7,12 +7,14 @@ import (
 	"time"
 )
 
+// Cell -- basic cell
 type Cell struct {
 	North, South, East, West *Cell
 	Row, Column              int
 	links                    map[*Cell]bool
 }
 
+// CellHandler -- This interface defines the bare minimum methods for a basic cell
 type CellHandler interface {
 	Link(cell *Cell, bidi bool) error
 	Unlink(cell *Cell, bidi bool) error
@@ -22,6 +24,7 @@ type CellHandler interface {
 	Distances() Distance
 }
 
+// NewCell -- Factory function for cells
 func NewCell(row, column int) (*Cell, error) {
 	if row < 0 || column < 0 {
 		return &Cell{}, errors.New("row and Column cannot be negative")
@@ -34,6 +37,7 @@ func NewCell(row, column int) (*Cell, error) {
 	return &cell, nil
 }
 
+// Neighbors -- Get all the surrounding cells
 func (receiver *Cell) Neighbors() []*Cell {
 	// Make with capacity to 4 elements at most
 	neighbors := make([]*Cell, 0, 4)
@@ -53,6 +57,7 @@ func (receiver *Cell) Neighbors() []*Cell {
 	return neighbors
 }
 
+// Links -- get all the cells this cell is connected to
 func (receiver *Cell) Links() []*Cell {
 	var keys []*Cell
 
@@ -65,6 +70,7 @@ func (receiver *Cell) Links() []*Cell {
 	return keys
 }
 
+// Linked -- check if a given cell is connected to this one
 func (receiver *Cell) Linked(cell *Cell) bool {
 	linked, exists := receiver.links[cell]
 	// check exists first cause if not !exists
@@ -77,6 +83,8 @@ func (receiver *Cell) Linked(cell *Cell) bool {
 	return linked
 }
 
+// Link -- Link this cell to another one
+// bidi -- The link is both ways
 func (receiver *Cell) Link(cell *Cell, bidi bool) error {
 	receiver.links[cell] = true
 	if bidi == true {
@@ -85,6 +93,8 @@ func (receiver *Cell) Link(cell *Cell, bidi bool) error {
 	return nil
 }
 
+// Unlink -- Unlink this cell from another one
+// bidi -- unlink happens both ways
 func (receiver *Cell) Unlink(cell *Cell, bidi bool) error {
 	delete(receiver.links, cell)
 	if bidi == true {

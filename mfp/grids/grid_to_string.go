@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+// There are a few edge cases
+// which I cannot quite figure out yet
+// since they'll require a cell to
+// know the boundaries of the other cells
 func gridToString(g ASCIIGridHandler) string {
 	output := "┌" + strings.Repeat("────", g.Columns()-1) + "───┐" + "\n"
 	index := 0

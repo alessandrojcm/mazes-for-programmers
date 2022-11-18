@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// SideWinder -- A sidewinder algorithm implementation
 func SideWinder(grid grids.BaseGridHandler) {
 	var err error
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))

@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// TiledGrid -- A grid that will pain each cell differently based on the openings of the cell itself
 type TiledGrid struct {
 	*RendererGrid
 }

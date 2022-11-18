@@ -6,11 +6,15 @@ import (
 	"mazes-for-programmers/mfp"
 )
 
+// GridBuilder -- Holds the underlying properties of the grid
 type GridBuilder struct {
 	rows, columns int
 	baseGrid      BaseGrid
 }
 
+// GridBuilderHandler -- this interfaces uses the builder pattern to build all the available types of grids
+// structs that implement this interface should hold a baseGrid in memory and use that to build upon.
+// This way we gan generate new grids without losing the information of the original grid.
 type GridBuilderHandler interface {
 	BuildBaseGrid() (BaseGrid, error)
 	BuildASCIIGrid() (ASCIIGrid, error)
@@ -49,6 +53,7 @@ func (g *GridBuilder) BuildBaseGrid() (BaseGrid, error) {
 
 func (g *GridBuilder) BuildASCIIGrid() (ASCIIGrid, error) {
 	var err error
+	// Assure we have a grid
 	if g.baseGrid.Empty() {
 		_, err = g.BuildBaseGrid()
 	}

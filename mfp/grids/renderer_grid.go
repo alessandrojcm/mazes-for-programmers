@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// RendererGrid -- basic grid renderer
 type RendererGrid struct {
 	*ASCIIGrid
 }

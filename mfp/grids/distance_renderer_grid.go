@@ -8,11 +8,14 @@ import (
 	"time"
 )
 
+// DistanceRenderGrid -- a grid that can render the distance weight using raylib
 type DistanceRenderGrid struct {
 	backgroundColor rl.Color
 	*DistanceGrid
 }
 
+// BackgroundColorForCell -- Computes an alpha value taking the distance into account and paints the background
+// accordingly (more translucent means farther)
 func (g *DistanceRenderGrid) BackgroundColorForCell(cell *mfp.Cell) color.RGBA {
 	distance, isOk := g.Distances.Cells[cell]
 	if !isOk {

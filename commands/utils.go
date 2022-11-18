@@ -15,6 +15,7 @@ import (
 var validArgs = []string{"sidewinder", "binarytree"}
 var target *rl.RenderTexture2D
 
+// handleAlgorithms -- receives a grid and applies the corresponding algorithm to it, also returns the file/window name
 func handleAlgorithms(cmd *cobra.Command, args []string, grid grids.BaseGridHandler) (name string) {
 	rows, _ := cmd.Flags().GetInt("rows")
 	columns, _ := cmd.Flags().GetInt("columns")
@@ -36,6 +37,7 @@ func handleAlgorithms(cmd *cobra.Command, args []string, grid grids.BaseGridHand
 	return
 }
 
+// handlePathSolve -- parses the input expression from the from-to path
 func handlePathSolve(grid grids.BaseGridHandler, name string) (string, mfp.Distance, error) {
 	normalizedStart, normalizedEnd := strings.Split(strings.ToLower(startCell), "x"), strings.Split(strings.ToLower(endCell), "x")
 	// get start & end cell
@@ -56,6 +58,7 @@ func handlePathSolve(grid grids.BaseGridHandler, name string) (string, mfp.Dista
 	return fmt.Sprintf("%s from %s to %s", name, startCell, endCell), distances.PathTo(end), nil
 }
 
+// handleLongestPath -- parses computing the largest path
 func handleLongestPath(grid grids.BaseGridHandler, name string) (string, mfp.Distance, error) {
 	start, err := grid.CellAt(0, 0)
 	d := start.Distances()

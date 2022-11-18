@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// drawMazeLines -- draws the lines (walls) for a maze
 func drawMazeLines(eachCell chan *mfp.Cell, cellSize, thickness, offset int, wall rl.Color) {
 	rl.BeginDrawing()
 	for cell := range eachCell {
@@ -26,6 +27,7 @@ func drawMazeLines(eachCell chan *mfp.Cell, cellSize, thickness, offset int, wal
 	rl.EndDrawing()
 }
 
+// prepareRenderContext -- does some preparations to the opengl context in order to render the maze
 func prepareRenderContext(columns, rows, thickness, cellSize int) (target rl.RenderTexture2D) {
 	debug := os.Getenv("DEBUG")
 	if cellSize <= 0 {

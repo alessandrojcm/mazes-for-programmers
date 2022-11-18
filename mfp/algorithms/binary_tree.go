@@ -12,6 +12,7 @@ const SouthAndWest = "southwest"
 const NorthAndWest = "northwest"
 const SouthAndEast = "southeast"
 
+// BinaryTree -- a binary tree maze implementation, with bias to change the texture of the maze
 func BinaryTree(grid grids.BaseGridHandler, bias string) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	log.Printf("starting binary tree run for %dx%d grid", grid.Rows(), grid.Columns())

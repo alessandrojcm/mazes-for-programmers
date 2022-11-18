@@ -8,11 +8,13 @@ import (
 	"time"
 )
 
+// BaseGrid -- A basic grid with no means to print or otherwise visually show itself
 type BaseGrid struct {
 	rows, columns int
 	cells         [][]*mfp.Cell
 }
 
+// BaseGridHandler -- defines the very basic methods for any grid
 type BaseGridHandler interface {
 	PrepareGrid() error
 	ConfigureCells() error
@@ -38,6 +40,7 @@ func (g *BaseGrid) Empty() bool {
 	return g.rows == 0 || g.columns == 0 || len(g.cells) == 0
 }
 
+// CellAt -- accessor to prevent out of bound errors
 func (g *BaseGrid) CellAt(row, column int) (*mfp.Cell, error) {
 	if row < 0 || row > g.rows-1 || column < 0 || column > g.columns-1 {
 		return &mfp.Cell{}, errors.New("cell out of bounds")
@@ -45,6 +48,7 @@ func (g *BaseGrid) CellAt(row, column int) (*mfp.Cell, error) {
 	return g.cells[row][column], nil
 }
 
+// PrepareGrid -- initializes the grid, filling the cells
 func (g *BaseGrid) PrepareGrid() error {
 	g.cells = make([][]*mfp.Cell, g.rows)
 	log.Printf("starting to prepare grid with %dx%d dimention", g.rows, g.columns)
@@ -62,6 +66,7 @@ func (g *BaseGrid) PrepareGrid() error {
 	return nil
 }
 
+// ConfigureCells -- Sets the links for the cells (which cells do a specific cell has a boundary with)
 func (g *BaseGrid) ConfigureCells() error {
 	log.Printf("starting to configure grid with %dx%d dimention", g.rows, g.columns)
 	defer mfp.TimeTrack(time.Now(), "grid configuration")

@@ -13,6 +13,8 @@ import (
 )
 
 var debug bool
+
+// root command line
 var rootCmd = &cobra.Command{
 	Use: "mfp",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
