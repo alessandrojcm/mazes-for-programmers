@@ -1,7 +1,6 @@
 package grids
 
 import (
-	"fmt"
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"image/color"
 	"log"
@@ -10,18 +9,18 @@ import (
 )
 
 type DistanceRenderGrid struct {
+	backgroundColor rl.Color
 	*DistanceGrid
 }
 
 func (g *DistanceRenderGrid) BackgroundColorForCell(cell *mfp.Cell) color.RGBA {
 	distance, isOk := g.Distances.Cells[cell]
 	if !isOk {
-		return rl.DarkGreen
+		return g.backgroundColor
 	}
 	_, maximum := g.Distances.Max()
 	intensity := (float32(maximum) - float32(distance)) / float32(maximum)
-	fmt.Println(intensity)
-	return rl.Fade(rl.DarkGreen, intensity)
+	return rl.Fade(g.backgroundColor, intensity)
 }
 
 func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int) *rl.RenderTexture2D {

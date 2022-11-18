@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/spf13/cobra"
 	"os"
 	"regexp"
@@ -9,12 +10,33 @@ import (
 )
 
 var cellSizes, thickness int
-var startCell, endCell string
+var startCell, endCell, backgroundCol string
 var longestPath bool
+
+var validColors = map[string]rl.Color{
+	"red":   rl.Red,
+	"green": rl.Green,
+	"blue":  rl.Blue,
+}
 
 func addRenderingFlags(cmd *cobra.Command) {
 	cmd.Flags().IntVarP(&cellSizes, "cellsize", "s", 60, "sets the size of the cells")
 	cmd.Flags().IntVarP(&thickness, "thickness", "w", 1, "sets the thickness of the walls for the exported images")
+	cmd.Flags().StringVarP(&backgroundCol, "background-color", "l", "green", "Set the background color to draw the distance grid with; options: red, green, blue.")
+
+	cmd.PreRun = func(cmd *cobra.Command, args []string) {
+		lp, _ := cmd.Flags().GetBool("longest-path")
+		// disregard color if not lp
+		if !lp {
+			return
+		}
+		color, _ := cmd.Flags().GetString("background-color")
+		_, isOk := validColors[color]
+		if !isOk {
+			cmd.PrintErr("Invalid color")
+			os.Exit(-1)
+		}
+	}
 }
 
 func addSolvingFlags(cmds ...*cobra.Command) {

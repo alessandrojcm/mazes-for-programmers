@@ -20,7 +20,7 @@ var exportCmd = &cobra.Command{
 		var name string
 
 		if longestPath {
-			grid, _ := builder.BuildGridWithDistanceRenderer()
+			grid, _ := builder.BuildGridWithDistanceRenderer(validColors[backgroundCol])
 			n, solution, err := handleLongestPath(grid, handleAlgorithms(cmd, args, grid))
 			name = n
 			if err != nil {
@@ -33,7 +33,7 @@ var exportCmd = &cobra.Command{
 			// Normal grid
 		} else if len(startCell) > 0 && len(endCell) > 0 {
 			// solve for start & end
-			grid, _ := builder.BuildGridWithDistanceRenderer()
+			grid, _ := builder.BuildGridWithDistanceRenderer(validColors[backgroundCol])
 			n, solution, err := handlePathSolve(grid, handleAlgorithms(cmd, args, grid))
 			name = n
 			if err != nil {

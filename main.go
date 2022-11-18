@@ -34,7 +34,6 @@ var rootCmd = &cobra.Command{
 }
 
 // TODO: print weights of the cells for the show command(s)
-// TODO: add mode to paint background with weight color
 func main() {
 	// Raylib uses OpenGL and OpenGL expects every
 	// call to be main on a single thread

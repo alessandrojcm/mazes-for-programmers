@@ -2,6 +2,7 @@ package grids
 
 import (
 	"errors"
+	rl "github.com/gen2brain/raylib-go/raylib"
 	"mazes-for-programmers/mfp"
 )
 
@@ -15,7 +16,7 @@ type GridBuilderHandler interface {
 	BuildASCIIGrid() (ASCIIGrid, error)
 	BuildGridLineRenderer() (RendererGrid, error)
 	BuildGridTiledRenderer() (TiledGrid, error)
-	BuildGridWithDistanceRenderer() (DistanceRenderGrid, error)
+	BuildGridWithDistanceRenderer(backgroundColor rl.Color) (DistanceRenderGrid, error)
 	BuildGridWithDistance() (DistanceGrid, error)
 }
 
@@ -76,9 +77,10 @@ func (g *GridBuilder) BuildGridTiledRenderer() (TiledGrid, error) {
 	}, err
 }
 
-func (g *GridBuilder) BuildGridWithDistanceRenderer() (DistanceRenderGrid, error) {
+func (g *GridBuilder) BuildGridWithDistanceRenderer(backgroundColor rl.Color) (DistanceRenderGrid, error) {
 	distanceGrid, err := g.BuildGridWithDistance()
 	return DistanceRenderGrid{
+		backgroundColor,
 		&distanceGrid,
 	}, err
 }
