@@ -26,19 +26,20 @@ func (g *RendererGrid) BackgroundColorForCell(cell *mfp.Cell) rl.Color {
 
 // ToTexture - Returns a texture2d ready to be displayed on the screen or exported to an image rendered with lines and walls
 func (g *RendererGrid) ToTexture(cellSize, thickness int) *rl.RenderTexture2D {
-	target := prepareRenderContext(g.columns, g.rows, thickness, cellSize)
-
-	background := rl.RayWhite
-
-	defer rl.EndTextureMode()
-
-	rl.BeginTextureMode(target)
-	rl.ClearBackground(background)
-	offset := thickness / 2
-	wall := rl.Black
 	log.Printf("starting to render grid with %dx%d dimention", g.rows, g.columns)
 	defer mfp.TimeTrack(time.Now(), "grid rendering")
-	drawMazeLines(g.EachCell(), cellSize, thickness, offset, wall)
+	background := rl.RayWhite
+	offset := thickness / 2
+	wall := rl.Black
+	target := prepareRenderContext(g.columns, g.rows, thickness, cellSize)
+	lines := drawMazeLines(g.EachCell(), cellSize, thickness, offset, target.Texture.Width, target.Texture.Height, wall)
+
+	rl.BeginTextureMode(target)
+	defer rl.EndDrawing()
+	defer rl.EndTextureMode()
+	rl.ClearBackground(background)
+	rl.BeginDrawing()
+	rl.DrawTexture(lines, 0, 0, rl.Blue)
 
 	return &target
 }

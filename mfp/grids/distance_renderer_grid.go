@@ -14,6 +14,10 @@ type DistanceRenderGrid struct {
 	*DistanceGrid
 }
 
+type DistanceRendererGridHandler interface {
+	*RendererGridHandler
+}
+
 // BackgroundColorForCell -- Computes an alpha value taking the distance into account and paints the background
 // accordingly (more translucent means farther)
 func (g *DistanceRenderGrid) BackgroundColorForCell(cell *mfp.Cell) color.RGBA {
@@ -27,20 +31,23 @@ func (g *DistanceRenderGrid) BackgroundColorForCell(cell *mfp.Cell) color.RGBA {
 }
 
 func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int) *rl.RenderTexture2D {
-	target := prepareRenderContext(g.columns, g.rows, thickness, cellSize)
-	offset := thickness / 2
-
-	rl.BeginTextureMode(target)
-	defer rl.EndTextureMode()
 	log.Printf("starting to render distenced grid with %dx%d dimention", g.rows, g.columns)
 	defer mfp.TimeTrack(time.Now(), "grid rendering")
+	offset := thickness / 2
+	target := prepareRenderContext(g.columns, g.rows, thickness, cellSize)
+	lines := drawMazeLines(g.EachCell(), cellSize, thickness, offset, target.Texture.Width, target.Texture.Height, rl.Black)
+
+	rl.BeginTextureMode(target)
+	defer rl.EndDrawing()
+	defer rl.EndTextureMode()
+
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.White)
 	for cell := range g.DistanceGrid.EachCell() {
 		x, y := int32((cell.Column*cellSize)+offset), int32((cell.Row*cellSize)+offset)
 		rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), g.BackgroundColorForCell(cell))
 	}
-	rl.EndDrawing()
-	drawMazeLines(g.EachCell(), cellSize, thickness, offset, rl.Black)
+
+	rl.DrawTexture(lines, 0, 0, rl.Black)
 	return &target
 }

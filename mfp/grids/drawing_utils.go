@@ -2,12 +2,19 @@ package grids
 
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
+	"log"
 	"mazes-for-programmers/mfp"
 	"os"
+	"time"
 )
 
-// drawMazeLines -- draws the lines (walls) for a maze
-func drawMazeLines(eachCell chan *mfp.Cell, cellSize, thickness, offset int, wall rl.Color) {
+// drawMazeLines -- draws the lines (walls) for a maze, this returns a texture instead of drawing directly into the target
+// so we can redraw it as necessary
+func drawMazeLines(eachCell chan *mfp.Cell, cellSize, thickness, offset int, width, height int32, wall rl.Color) rl.Texture2D {
+	log.Printf("Starting to prerender maze walls")
+	defer mfp.TimeTrack(time.Now(), "walls prerendering")
+	target := rl.LoadRenderTexture(width, height)
+	rl.BeginTextureMode(target)
 	rl.BeginDrawing()
 	for cell := range eachCell {
 		x1, y1, x2, y2 := (cell.Column*cellSize)+offset, (cell.Row*cellSize)+offset, ((cell.Column+1)*cellSize)+offset, (((cell.Row)+1)*cellSize)+offset
@@ -25,6 +32,8 @@ func drawMazeLines(eachCell chan *mfp.Cell, cellSize, thickness, offset int, wal
 		}
 	}
 	rl.EndDrawing()
+	rl.EndTextureMode()
+	return target.Texture
 }
 
 // prepareRenderContext -- does some preparations to the opengl context in order to render the maze
