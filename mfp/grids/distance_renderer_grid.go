@@ -35,7 +35,7 @@ func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int) *rl.RenderTextur
 	defer mfp.TimeTrack(time.Now(), "grid rendering")
 	offset := thickness / 2
 	target := prepareRenderContext(g.columns, g.rows, thickness, cellSize)
-	lines := drawMazeLines(g.EachCell(), cellSize, thickness, offset, target.Texture.Width, target.Texture.Height, rl.Black)
+	lines := generateMazeWallsTexture(g.EachCell(), cellSize, thickness, offset, target.Texture.Width, target.Texture.Height, rl.Black)
 
 	rl.BeginTextureMode(target)
 	defer rl.EndDrawing()

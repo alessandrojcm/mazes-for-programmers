@@ -8,14 +8,16 @@ import (
 	"time"
 )
 
-// drawMazeLines -- draws the lines (walls) for a maze, this returns a texture instead of drawing directly into the target
+// generateMazeWallsTexture -- draws the lines (walls) for a maze, this returns a texture instead of drawing directly into the target,
 // so we can redraw it as necessary
-func drawMazeLines(eachCell chan *mfp.Cell, cellSize, thickness, offset int, width, height int32, wall rl.Color) rl.Texture2D {
+func generateMazeWallsTexture(eachCell chan *mfp.Cell, cellSize, thickness, offset int, width, height int32, wall rl.Color) rl.Texture2D {
 	log.Printf("Starting to prerender maze walls")
 	defer mfp.TimeTrack(time.Now(), "walls prerendering")
 	target := rl.LoadRenderTexture(width, height)
 	rl.BeginTextureMode(target)
 	rl.BeginDrawing()
+	defer rl.EndDrawing()
+	defer rl.EndTextureMode()
 	for cell := range eachCell {
 		x1, y1, x2, y2 := (cell.Column*cellSize)+offset, (cell.Row*cellSize)+offset, ((cell.Column+1)*cellSize)+offset, (((cell.Row)+1)*cellSize)+offset
 		if cell.North == nil {
@@ -31,8 +33,6 @@ func drawMazeLines(eachCell chan *mfp.Cell, cellSize, thickness, offset int, wid
 			rl.DrawLineBezier(rl.NewVector2(float32(x1), float32(y2)), rl.NewVector2(float32(x2), float32(y2)), float32(thickness), wall)
 		}
 	}
-	rl.EndDrawing()
-	rl.EndTextureMode()
 	return target.Texture
 }
 

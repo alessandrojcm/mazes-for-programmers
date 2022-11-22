@@ -32,14 +32,14 @@ func (g *RendererGrid) ToTexture(cellSize, thickness int) *rl.RenderTexture2D {
 	offset := thickness / 2
 	wall := rl.Black
 	target := prepareRenderContext(g.columns, g.rows, thickness, cellSize)
-	lines := drawMazeLines(g.EachCell(), cellSize, thickness, offset, target.Texture.Width, target.Texture.Height, wall)
+	lines := generateMazeWallsTexture(g.EachCell(), cellSize, thickness, offset, target.Texture.Width, target.Texture.Height, wall)
 
 	rl.BeginTextureMode(target)
 	defer rl.EndDrawing()
 	defer rl.EndTextureMode()
 	rl.ClearBackground(background)
 	rl.BeginDrawing()
-	rl.DrawTexture(lines, 0, 0, rl.Blue)
+	rl.DrawTexture(lines, 0, 0, rl.Black)
 
 	return &target
 }
