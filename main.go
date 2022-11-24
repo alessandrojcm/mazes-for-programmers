@@ -36,6 +36,7 @@ var rootCmd = &cobra.Command{
 }
 
 // TODO: print weights of the cells for the show command(s)
+// TODO: fix weight fot the ASCII version (it overflows the cells)
 func main() {
 	// Raylib uses OpenGL and OpenGL expects every
 	// call to be main on a single thread

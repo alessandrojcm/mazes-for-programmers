@@ -22,12 +22,18 @@ type DistanceRendererGridHandler interface {
 // accordingly (more translucent means farther)
 func (g *DistanceRenderGrid) BackgroundColorForCell(cell *mfp.Cell) color.RGBA {
 	distance, isOk := g.Distances.Cells[cell]
+	bgColor := g.backgroundColor
+	// blank means random color
+	// so we'll generate one
+	if bgColor == rl.Blank {
+		bgColor = mfp.GetRandomColor()
+	}
 	if !isOk {
-		return g.backgroundColor
+		return bgColor
 	}
 	_, maximum := g.Distances.Max()
 	intensity := (float32(maximum) - float32(distance)) / float32(maximum)
-	return rl.Fade(g.backgroundColor, intensity)
+	return rl.Fade(bgColor, intensity)
 }
 
 func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int) *rl.RenderTexture2D {

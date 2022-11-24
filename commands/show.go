@@ -21,7 +21,7 @@ var showCmd = &cobra.Command{
 		builder := grids.NewBuilder(rows, columns)
 
 		if longestPath {
-			grid, _ := builder.BuildGridWithDistanceRenderer(validColors[backgroundCol])
+			grid, _ := builder.BuildGridWithDistanceRenderer(rl.Color(backgroundCol))
 			n, solution, err := handleLongestPath(grid, handleAlgorithms(cmd, args, grid))
 			name = n
 			if err != nil {
@@ -33,7 +33,7 @@ var showCmd = &cobra.Command{
 			target = grid.ToTexture(cellSizes, thickness)
 		} else if len(startCell) > 0 && len(endCell) > 0 {
 			// solve for start & end
-			grid, _ := builder.BuildGridWithDistanceRenderer(validColors[backgroundCol])
+			grid, _ := builder.BuildGridWithDistanceRenderer(rl.Color(backgroundCol))
 			n, solution, err := handlePathSolve(grid, handleAlgorithms(cmd, args, grid))
 			name = n
 			if err != nil {
@@ -74,7 +74,7 @@ var animateCmd = &cobra.Command{
 		rows, _ := cmd.Flags().GetInt("rows")
 		columns, _ := cmd.Flags().GetInt("columns")
 		builder := grids.NewBuilder(rows, columns)
-		grid, _ := builder.BuildAnimatableGrid(validColors[backgroundCol])
+		grid, _ := builder.BuildAnimatableGrid(rl.Color(backgroundCol))
 
 		if longestPath {
 			n, solution, err := handleLongestPath(grid, handleAlgorithms(cmd, args, grid))
@@ -114,9 +114,8 @@ var animateCmd = &cobra.Command{
 
 func InitShow(cmd *cobra.Command) {
 	addRenderingFlags(showCmd)
-	addSolvingFlags(showCmd)
+	addSolvingFlags(showCmd, animateCmd)
 
-	addSolvingFlags(animateCmd)
 	addRenderingFlags(animateCmd)
 
 	cmd.AddCommand(showCmd)

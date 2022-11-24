@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"errors"
 	"fmt"
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/spf13/cobra"
@@ -37,20 +38,35 @@ func handleAlgorithms(cmd *cobra.Command, args []string, grid grids.BaseGridHand
 	return
 }
 
+// parseCellExpression -- validates expressions for the rowxcol input an returns the row and the col
+func parseCellExpression(cellExpr string) ([]int, error) {
+	err := errors.New("malformed cell expression, make sure is in the form RowXColumn")
+	if !strings.ContainsAny(cellExpr, "xX") {
+		return []int{}, err
+	}
+	cell := strings.Split(strings.ToLower(cellExpr), "x")
+	if len(cell) != 2 {
+		return []int{}, err
+	}
+	var row, col int
+	row, err = strconv.Atoi(cell[0])
+	if err != nil {
+		return []int{}, err
+	}
+	col, err = strconv.Atoi(cell[1])
+	return []int{row, col}, err
+}
+
 // handlePathSolve -- parses the input expression from the from-to path
 func handlePathSolve(grid grids.BaseGridHandler, name string) (string, mfp.Distance, error) {
-	normalizedStart, normalizedEnd := strings.Split(strings.ToLower(startCell), "x"), strings.Split(strings.ToLower(endCell), "x")
-	// get start & end cell
-	startRow, _ := strconv.Atoi(normalizedStart[0])
-	startCol, _ := strconv.Atoi(normalizedStart[1])
-	endRow, _ := strconv.Atoi(normalizedEnd[0])
-	endCol, _ := strconv.Atoi(normalizedEnd[1])
+	normalizedStart, _ := parseCellExpression(startCell)
+	normalizedEnd, _ := parseCellExpression(endCell)
 	// Calculate path
-	start, err := grid.CellAt(startRow, startCol)
+	start, err := grid.CellAt(normalizedStart[0], normalizedStart[1])
 	if err != nil {
 		return name, mfp.Distance{}, nil
 	}
-	end, err := grid.CellAt(endRow, endCol)
+	end, err := grid.CellAt(normalizedEnd[0], normalizedEnd[1])
 	if err != nil {
 		return name, mfp.Distance{}, nil
 	}
@@ -71,8 +87,11 @@ func handleLongestPath(grid grids.BaseGridHandler, name string) (string, mfp.Dis
 	return fmt.Sprintf("%slongest path", name), newDistances.PathTo(goal), nil
 }
 
+// postRenderCleanup -- finalizes the opengl context
 func postRenderCleanup() {
-	rl.UnloadTexture(target.Texture)
-	rl.UnloadRenderTexture(*target)
+	if target != nil {
+		rl.UnloadTexture(target.Texture)
+		rl.UnloadRenderTexture(*target)
+	}
 	rl.CloseWindow()
 }

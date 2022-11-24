@@ -32,10 +32,14 @@ func drawCell(cell *mfp.Cell, cellSize, offset int, color rl.Color) {
 func prepareCanvas(cells []cellColor, cellSize, offset int, lines rl.Texture2D, backgroundColor rl.Color) {
 	rl.ClearBackground(rl.White)
 	rl.BeginDrawing()
+	bgColor := backgroundColor
+	if bgColor == rl.Blank {
+		bgColor = mfp.GetRandomColor()
+	}
 	// draw every cell first with the solid bg color
 	for _, cell := range cells {
 		x, y := int32((cell.cell.Column*cellSize)+offset), int32((cell.cell.Row*cellSize)+offset)
-		rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), backgroundColor)
+		rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), bgColor)
 	}
 	rl.DrawTexture(lines, 0, 0, rl.Black)
 	rl.EndDrawing()
