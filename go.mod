@@ -3,7 +3,7 @@ module mazes-for-programmers
 go 1.19
 
 require (
-	github.com/gen2brain/raylib-go/raylib v0.0.0-20221105143954-3f14ff470c35
+	github.com/gen2brain/raylib-go/raylib v0.0.0-20221127193218-23cae4c96cbe
 	github.com/spf13/cobra v1.6.1
 	github.com/stretchr/testify v1.8.1
 )
