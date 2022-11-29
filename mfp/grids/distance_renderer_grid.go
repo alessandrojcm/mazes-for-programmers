@@ -54,6 +54,13 @@ func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int) *rl.RenderTextur
 		rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), g.BackgroundColorForCell(cell))
 	}
 
-	rl.DrawTexture(lines, 0, 0, rl.Black)
+	// FLIP THE TEXTURE!!
+	rl.DrawTextureRec(
+		lines,
+		rl.NewRectangle(
+			0, 0, float32(lines.Width), float32(lines.Height*-1)),
+		rl.NewVector2(0, 0),
+		rl.Black,
+	)
 	return &target
 }
