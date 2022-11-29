@@ -8,6 +8,43 @@ import (
 	"time"
 )
 
+type cellColor struct {
+	cell  *mfp.Cell
+	color rl.Color
+}
+
+// prepareCanvas -- renders a slice of tiles given each tile has a bgColor
+func prepareCanvas(cells []cellColor, cellSize, offset int, lines rl.Texture2D, backgroundColor rl.Color) {
+	rl.ClearBackground(rl.White)
+	rl.BeginDrawing()
+	bgColor := backgroundColor
+	if bgColor == rl.Blank {
+		bgColor = mfp.GetRandomColor()
+	}
+	// draw every cell first with the solid bg color
+	for _, cell := range cells {
+		x, y := int32((cell.cell.Column*cellSize)+offset), int32((cell.cell.Row*cellSize)+offset)
+		rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), bgColor)
+	}
+	// FLIP THE TEXTURE!!
+	rl.DrawTextureRec(
+		lines,
+		rl.NewRectangle(
+			0, 0, float32(lines.Width), float32(lines.Height*-1)),
+		rl.NewVector2(0, 0),
+		rl.Black,
+	)
+	rl.EndDrawing()
+}
+
+// drawCell -- draws a cell given the cell, the size, the offset and the color
+func drawCell(cell *mfp.Cell, cellSize, offset int, color rl.Color) {
+	x, y := int32((cell.Column*cellSize)+offset), int32((cell.Row*cellSize)+offset)
+	// clear the space first
+	rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), rl.White)
+	rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), color)
+}
+
 // generateMazeWallsTexture -- draws the lines (walls) for a maze, this returns a texture instead of drawing directly into the target,
 // so we can redraw it as necessary
 func generateMazeWallsTexture(eachCell chan *mfp.Cell, cellSize, thickness, offset int, width, height int32, wall rl.Color) rl.Texture2D {
@@ -46,7 +83,7 @@ func prepareRenderContext(columns, rows, thickness, cellSize int) (target rl.Ren
 		thickness = 1
 	}
 
-	width, height := (cellSize*columns)+thickness, (cellSize*rows)+thickness
+	width, height := cellSize*columns, cellSize*rows
 
 	// Let's use a hidden OpenGL context to
 	// draw the image since the texture

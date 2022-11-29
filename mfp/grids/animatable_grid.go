@@ -12,42 +12,14 @@ type AnimatableGrid struct {
 	*DistanceRenderGrid
 }
 
-type cellColor struct {
-	cell  *mfp.Cell
-	color rl.Color
-}
-
 type AnimatableGridHandler interface {
 	RendererGridHandler
 	ShowAnimation(cellSize, thickness int)
 }
 
-func drawCell(cell *mfp.Cell, cellSize, offset int, color rl.Color) {
-	x, y := int32((cell.Column*cellSize)+offset), int32((cell.Row*cellSize)+offset)
-	// clear the space first
-	rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), rl.White)
-	rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), color)
-}
-
-func prepareCanvas(cells []cellColor, cellSize, offset int, lines rl.Texture2D, backgroundColor rl.Color) {
-	rl.ClearBackground(rl.White)
-	rl.BeginDrawing()
-	bgColor := backgroundColor
-	if bgColor == rl.Blank {
-		bgColor = mfp.GetRandomColor()
-	}
-	// draw every cell first with the solid bg color
-	for _, cell := range cells {
-		x, y := int32((cell.cell.Column*cellSize)+offset), int32((cell.cell.Row*cellSize)+offset)
-		rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), bgColor)
-	}
-	rl.DrawTexture(lines, 0, 0, rl.Black)
-	rl.EndDrawing()
-}
-
 func (g *AnimatableGrid) ShowAnimation(cellSize, thickness int) {
-	log.Printf("starting to animate distenced grid with %dx%d dimention", g.rows, g.columns)
-	defer mfp.TimeTrack(time.Now(), "grid rendering")
+	log.Printf("starting to animate distanced grid with %dx%d dimention", g.rows, g.columns)
+	defer mfp.TimeTrack(time.Now(), "animatable grid rendering")
 
 	var cells []cellColor
 	var translucentCells []cellColor
@@ -102,7 +74,6 @@ func (g *AnimatableGrid) ShowAnimation(cellSize, thickness int) {
 		rl.BeginDrawing()
 		drawCell(translucentCells[actualCell].cell, cellSize, offset, translucentCells[actualCell].color)
 		actualCell++
-		rl.DrawTexture(lines, 0, 0, rl.Black)
 		rl.EndDrawing()
 		isFinished = actualCell > actualCell%len(translucentCells)
 	}
