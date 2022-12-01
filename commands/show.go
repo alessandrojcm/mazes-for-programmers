@@ -73,8 +73,9 @@ var animateCmd = &cobra.Command{
 		var _ string
 		rows, _ := cmd.Flags().GetInt("rows")
 		columns, _ := cmd.Flags().GetInt("columns")
+		breadcrumb, _ := cmd.Flags().GetBool("breadcrumb")
 		builder := grids.NewBuilder(rows, columns)
-		grid, _ := builder.BuildAnimatableGrid(rl.Color(backgroundCol))
+		grid, _ := builder.BuildGridWithDistance()
 
 		if longestPath {
 			n, solution, err := handleLongestPath(grid, handleAlgorithms(cmd, args, grid))
@@ -105,7 +106,13 @@ var animateCmd = &cobra.Command{
 			}
 			grid.Distances = solution
 		}
-		grid.ShowAnimation(cellSizes, thickness)
+		if breadcrumb {
+			renderer, _ := builder.BuildGridWithBreadCrumb(rl.Color(backgroundCol))
+			renderer.ShowAnimation(cellSizes, thickness)
+		} else {
+			renderer, _ := builder.BuildAnimatableGrid(rl.Color(backgroundCol))
+			renderer.ShowAnimation(cellSizes, thickness)
+		}
 	},
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
 		postRenderCleanup()
@@ -117,6 +124,7 @@ func InitShow(cmd *cobra.Command) {
 	addSolvingFlags(showCmd, animateCmd)
 
 	addRenderingFlags(animateCmd)
+	animateCmd.Flags().Bool("breadcrumb", false, "draw a breadcrumb line")
 
 	cmd.AddCommand(showCmd)
 	cmd.AddCommand(animateCmd)

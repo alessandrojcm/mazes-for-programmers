@@ -24,7 +24,15 @@ type GridBuilderHandler interface {
 	BuildGridWithDistanceRenderer(backgroundColor rl.Color) (*DistanceRenderGrid, error)
 	BuildGridWithDistance() (*DistanceGrid, error)
 	BuildAnimatableGrid(backgroundColor rl.Color) (*AnimatableGrid, error)
+	BuildGridWithBreadCrumb(backgroundColor rl.Color) (*BreadcrumbGrid, error)
 }
+
+func (g *GridBuilder) BuildGridWithBreadCrumb(backgroundColor rl.Color) (*BreadcrumbGrid, error) {
+	animatableGrid, err := g.BuildAnimatableGrid(backgroundColor)
+
+	return &BreadcrumbGrid{
+		animatableGrid,
+	}, err
 }
 
 func NewBuilder(rows, column int) *GridBuilder {

@@ -14,6 +14,13 @@ type Cell struct {
 	links                    map[*Cell]bool
 }
 
+type Direction string
+
+const North Direction = "North"
+const South Direction = "South"
+const East Direction = "East"
+const West Direction = "West"
+
 // CellHandler -- This interface defines the bare minimum methods for a basic cell
 type CellHandler interface {
 	Link(cell *Cell, bidi bool) error
@@ -22,6 +29,7 @@ type CellHandler interface {
 	Linked(cell *Cell) bool
 	Neighbors() []*Cell
 	Distances() Distance
+	GetDirectionForLink(cell *Cell) (Direction, error)
 }
 
 // NewCell -- Factory function for cells
@@ -152,4 +160,21 @@ func dijkstra(receiver *Cell) Distance {
 		frontier = newFrontier
 	}
 	return distances
+}
+
+// GetDirectionForLink -- this function returns the direction to a given cell that is in this cell's link list
+func (receiver *Cell) GetDirectionForLink(cell *Cell) (Direction, error) {
+	if receiver.North == cell {
+		return North, nil
+	}
+	if receiver.South == cell {
+		return South, nil
+	}
+	if receiver.East == cell {
+		return East, nil
+	}
+	if receiver.West == cell {
+		return West, nil
+	}
+	return "", errors.New("given cell not in this cell's vicinity")
 }
