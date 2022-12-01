@@ -3,6 +3,7 @@ package grids
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"log"
+	"math/bits"
 	"mazes-for-programmers/mfp"
 	"sort"
 	"time"
@@ -13,7 +14,7 @@ type BreadcrumbGrid struct {
 }
 
 // drawPath -- draws a straight line given a cell and two different points
-func drawPath(cell *mfp.Cell, cellSize, offset int, from, to mfp.Direction) {
+func drawPath(cell *mfp.Cell, cellSize, offset int, from, to mfp.Direction, col rl.Color) {
 	x, y := float32((cell.Column*cellSize)+offset), float32((cell.Row*cellSize)+offset)
 	halfStep := float32(cellSize-offset) / 2
 	getVectorPath := func(dir mfp.Direction) rl.Vector2 {
@@ -37,7 +38,18 @@ func drawPath(cell *mfp.Cell, cellSize, offset int, from, to mfp.Direction) {
 			return rl.NewVector2(x, y+halfStep)
 		}
 	}
-	rl.DrawLineV(getVectorPath(from), getVectorPath(to), rl.Red)
+	if col == rl.Blank {
+		rl.DrawLineEx(getVectorPath(from), getVectorPath(to), 5, mfp.GetRandomColor())
+	} else {
+		// we'll obtain the reverse of the color
+		rl.DrawLineEx(getVectorPath(from), getVectorPath(to), 5, rl.NewColor(
+			bits.Reverse8(col.R),
+			bits.Reverse8(col.G),
+			bits.Reverse8(col.B),
+			col.A,
+		))
+	}
+
 }
 
 func (g *BreadcrumbGrid) ShowAnimation(cellSize, thickness int) {
@@ -102,7 +114,7 @@ func (g *BreadcrumbGrid) ShowAnimation(cellSize, thickness int) {
 		if actualCell > 0 && actualCell < len(breadCrumbCells)-2 {
 			tail, _ := breadCrumbCells[actualCell].cell.GetDirectionForLink(breadCrumbCells[actualCell-1].cell)
 			middle, _ := breadCrumbCells[actualCell].cell.GetDirectionForLink(breadCrumbCells[actualCell+1].cell)
-			drawPath(breadCrumbCells[actualCell].cell, cellSize, offset, tail, middle)
+			drawPath(breadCrumbCells[actualCell].cell, cellSize, offset, tail, middle, g.backgroundColor)
 			log.Printf("cell %d from the %s to the %s\n", actualCell, tail, middle)
 		}
 		actualCell++
