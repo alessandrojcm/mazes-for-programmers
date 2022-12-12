@@ -39,6 +39,14 @@ var printCmd = &cobra.Command{
 			}
 			grid.Distances = solution
 			fmt.Println(name, "\n", grid)
+		} else if spreadMiddle {
+			grid, _ := builder.BuildGridWithDistance()
+			middle, err := grid.CellAt(rows/2, columns/2)
+			if err != nil {
+				cmd.PrintErrln(err)
+				os.Exit(-1)
+			}
+			grid.Distances = middle.Distances()
 		} else {
 			// print normal maze
 			grid, _ := builder.BuildASCIIGrid()

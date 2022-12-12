@@ -43,6 +43,16 @@ var showCmd = &cobra.Command{
 			grid.Distances = solution
 			// create texture
 			target = grid.ToTexture(cellSizes, thickness)
+		} else if spreadMiddle {
+			grid, _ := builder.BuildGridWithDistanceRenderer(rl.Color(backgroundCol))
+			handleAlgorithms(cmd, args, grid)
+			middle, err := grid.CellAt(rows/2, columns/2)
+			if err != nil {
+				cmd.PrintErrln(err)
+				os.Exit(-1)
+			}
+			grid.Distances = middle.Distances()
+			target = grid.ToTexture(cellSizes, thickness)
 		} else {
 			// Normal grid
 			grid, _ := builder.BuildGridLineRenderer()
@@ -81,7 +91,7 @@ var animateCmd = &cobra.Command{
 			n, solution, err := handleLongestPath(grid, handleAlgorithms(cmd, args, grid))
 			_ = n
 			if err != nil {
-				cmd.Println(err)
+				cmd.PrintErrln(err)
 				os.Exit(-1)
 			}
 			grid.Distances = solution
@@ -90,10 +100,18 @@ var animateCmd = &cobra.Command{
 			n, solution, err := handlePathSolve(grid, handleAlgorithms(cmd, args, grid))
 			_ = n
 			if err != nil {
-				cmd.Println(err)
+				cmd.PrintErrln(err)
 				os.Exit(-1)
 			}
 			grid.Distances = solution
+		} else if spreadMiddle {
+			handleAlgorithms(cmd, args, grid)
+			middle, err := grid.CellAt(rows/2, columns/2)
+			if err != nil {
+				cmd.PrintErrln(err)
+				os.Exit(-1)
+			}
+			grid.Distances = middle.Distances()
 		} else {
 			// if not anything set, solve for max path
 			// solve for start & end
@@ -101,7 +119,7 @@ var animateCmd = &cobra.Command{
 			n, solution, err := handlePathSolve(grid, handleAlgorithms(cmd, args, grid))
 			_ = n
 			if err != nil {
-				cmd.Println(err)
+				cmd.PrintErrln(err)
 				os.Exit(-1)
 			}
 			grid.Distances = solution

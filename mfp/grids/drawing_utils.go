@@ -13,6 +13,17 @@ type cellColor struct {
 	color rl.Color
 }
 
+func drawMazeLines(lines rl.Texture2D) {
+	// FLIP THE TEXTURE!!
+	rl.DrawTextureRec(
+		lines,
+		rl.NewRectangle(
+			0, 0, float32(lines.Width), float32(lines.Height*-1)),
+		rl.NewVector2(0, 0),
+		rl.Black,
+	)
+}
+
 // prepareCanvas -- renders a slice of tiles given each tile has a bgColor
 func prepareCanvas(cells []cellColor, cellSize, offset int, lines rl.Texture2D, backgroundColor rl.Color) {
 	rl.ClearBackground(rl.White)
@@ -26,14 +37,7 @@ func prepareCanvas(cells []cellColor, cellSize, offset int, lines rl.Texture2D, 
 		x, y := int32((cell.cell.Column*cellSize)+offset), int32((cell.cell.Row*cellSize)+offset)
 		rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), bgColor)
 	}
-	// FLIP THE TEXTURE!!
-	rl.DrawTextureRec(
-		lines,
-		rl.NewRectangle(
-			0, 0, float32(lines.Width), float32(lines.Height*-1)),
-		rl.NewVector2(0, 0),
-		rl.Black,
-	)
+	drawMazeLines(lines)
 	rl.EndDrawing()
 }
 

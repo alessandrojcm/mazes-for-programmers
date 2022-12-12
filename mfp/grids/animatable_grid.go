@@ -74,6 +74,7 @@ func (g *AnimatableGrid) ShowAnimation(cellSize, thickness int) {
 		rl.BeginDrawing()
 		drawCell(translucentCells[actualCell].cell, cellSize, offset, translucentCells[actualCell].color)
 		actualCell++
+		drawMazeLines(lines)
 		rl.EndDrawing()
 		isFinished = actualCell > actualCell%len(translucentCells)
 	}

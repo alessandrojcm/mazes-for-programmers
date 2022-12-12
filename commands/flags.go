@@ -10,7 +10,7 @@ type colorFlag rl.Color
 
 var cellSizes, thickness int
 var startCell, endCell string
-var longestPath bool
+var longestPath, spreadMiddle bool
 
 var backgroundCol = colorFlag(rl.Green)
 
@@ -55,10 +55,14 @@ func addSolvingFlags(cmds ...*cobra.Command) {
 	for _, cmd := range cmds {
 		cmd.Flags().StringVar(&startCell, "solve-from", "", "Set the starting cell to solve the maze from in the RowxColumn format")
 		cmd.Flags().StringVar(&endCell, "solve-to", "", "Set the ending cell to solve the maze to in the RowxColumn format")
-		cmd.Flags().BoolVarP(&longestPath, "longest-path", "p", false, "draw the longest path in the maze")
+		cmd.Flags().BoolVarP(&longestPath, "longest-path", "p", false, "Draw the longest path in the maze")
+		cmd.Flags().BoolVar(&spreadMiddle, "spread-middle", false, "Set the middle cell and start spreading from there")
 		cmd.MarkFlagsRequiredTogether("solve-from", "solve-to")
 		cmd.MarkFlagsMutuallyExclusive("solve-to", "longest-path")
 		cmd.MarkFlagsMutuallyExclusive("solve-from", "longest-path")
+		cmd.MarkFlagsMutuallyExclusive("spread-middle", "solve-from")
+		cmd.MarkFlagsMutuallyExclusive("spread-middle", "solve-to")
+		cmd.MarkFlagsMutuallyExclusive("spread-middle", "longest-path")
 
 		cmd.PreRunE = func(cmd *cobra.Command, args []string) error {
 			rows, _ := cmd.Flags().GetInt("rows")
