@@ -10,10 +10,10 @@ import (
 
 // SideWinder -- A sidewinder algorithm implementation
 func SideWinder(grid grids.BaseGridHandler) {
+	log.Printf("starting sidewinder run for %dx%d grid", grid.Rows(), grid.Columns())
+	defer mfp.TimeTrack(time.Now(), "sidewinder run")
 	var err error
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	log.Printf("starting sidewinder run for %dx%d grid", grid.Rows(), grid.Columns())
-	defer mfp.TimeTrack(time.Now(), "binary tree run")
 	for row := range grid.EachRow() {
 		run := make([]*mfp.Cell, 0, len(row))
 
