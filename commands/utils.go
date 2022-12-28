@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-var validArgs = []string{"sidewinder", "binarytree", "aldous-broder", "wilson"}
+var validArgs = []string{"sidewinder", "binarytree", "aldous-broder", "wilson", "hunt-and-kill"}
 var target *rl.RenderTexture2D
 
 // handleAlgorithms -- receives a grid and applies the corresponding algorithm to it, also returns the file/window name
@@ -40,6 +40,9 @@ func handleAlgorithms(cmd *cobra.Command, args []string, grid grids.BaseGridHand
 	case "wilson":
 		name = fmt.Sprintf("#{wilson} #{row}x#[columns} maze")
 		algorithms.Wilson(grid)
+	case "hunt-and-kill":
+		name = fmt.Sprintf("#{hunt-and-kill} #{row}x#[columns} maze")
+		algorithms.HuntAndKill(grid)
 	}
 	return
 }
