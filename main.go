@@ -37,13 +37,12 @@ var rootCmd = &cobra.Command{
 
 // TODO: print weights of the cells for the show command(s)
 // TODO: fix weight fot the ASCII version (it overflows the cells)
-// TODO: adapt cell size to not overflow height of the screen
 // TODO: refactor to use GetRandomOne
 // TODO: add an option to mix up two algorithms mid-walk
 // TODO: spread middle seems fishy, check it out
 func main() {
 	// Raylib uses OpenGL and OpenGL expects every
-	// call to be main on a single thread
+	// call to be made on a single thread
 	// so block the thread to avoid crashes
 	runtime.LockOSThread()
 
