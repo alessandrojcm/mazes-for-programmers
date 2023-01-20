@@ -8,11 +8,15 @@ import (
 	"time"
 )
 
-func HuntAndKill(grid grids.BaseGridHandler) {
+func HuntAndKill(grid grids.BaseGridHandler, cutOffPoint int) {
 	log.Printf("starting hunt & kill tree run for %dx%d grid", grid.Rows(), grid.Columns())
 	defer mfp.TimeTrack(time.Now(), "hunt & kill")
+	count := 0
 	current, _ := grid.RandomCell()
 	for current != nil {
+		if cutOffPoint != -1 && count >= cutOffPoint {
+			return
+		}
 		unvisitedNeighbors := arrutil.TakeWhile(current.Neighbors(), func(a any) bool {
 			return len(a.(*mfp.Cell).Links()) == 0
 		}).([]*mfp.Cell)
@@ -33,6 +37,7 @@ func HuntAndKill(grid grids.BaseGridHandler) {
 					return false
 				}).([]*mfp.Cell)
 				if len(cell.Links()) == 0 && len(visitedNeighbors) > 0 {
+					count++
 					current = cell
 					neighbor := arrutil.GetRandomOne[*mfp.Cell](visitedNeighbors)
 					current.Link(neighbor, true)

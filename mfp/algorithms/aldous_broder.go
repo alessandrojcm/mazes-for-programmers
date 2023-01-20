@@ -1,28 +1,28 @@
 package algorithms
 
 import (
+	"github.com/gookit/goutil/arrutil"
 	"log"
-	"math/rand"
 	"mazes-for-programmers/mfp"
 	"mazes-for-programmers/mfp/grids"
 	"time"
 )
 
 // AldousBroder -- an implementation of the Aldous-Broder algorithm
-func AldousBroder(grid grids.BaseGridHandler) {
+func AldousBroder(grid grids.BaseGridHandler, cutOffPoint int) {
 	log.Printf("starting aldous-broder tree run for %dx%d grid", grid.Rows(), grid.Columns())
 	defer mfp.TimeTrack(time.Now(), "aldous broder")
 	cell, err := grid.RandomCell()
-	unvisited := grid.Size() - 1
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	unvisited, count := grid.Size()-1, 0
 	if err != nil {
 		panic(err)
 	}
 
 	for unvisited > 0 {
-		sample := r.Intn(len(cell.Neighbors()))
-		log.Println(sample)
-		neighbor := cell.Neighbors()[sample]
+		if cutOffPoint != -1 && count >= cutOffPoint {
+			return
+		}
+		neighbor := arrutil.GetRandomOne[*mfp.Cell](cell.Neighbors())
 
 		if len(neighbor.Links()) == 0 {
 			err = cell.Link(neighbor, true)
@@ -31,6 +31,7 @@ func AldousBroder(grid grids.BaseGridHandler) {
 			}
 			unvisited -= 1
 			log.Printf("%d cells to go", unvisited)
+			count++
 		}
 		cell = neighbor
 	}

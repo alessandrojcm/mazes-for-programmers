@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"mazes-for-programmers/mfp"
 	"mazes-for-programmers/mfp/grids"
 	"os"
 )
@@ -13,16 +14,20 @@ var printCmd = &cobra.Command{
 	Short:     "Prints a maze wih ASCII characters",
 	Aliases:   []string{"p"},
 	ValidArgs: validArgs,
-	Args:      cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
+	Args:      cobra.MatchAll(cobra.RangeArgs(1, len(validArgs)-1), cobra.OnlyValidArgs),
 	Run: func(cmd *cobra.Command, args []string) {
 		rows, _ := cmd.Flags().GetInt("rows")
 		columns, _ := cmd.Flags().GetInt("columns")
 		builder := grids.NewBuilder(rows, columns)
+		var name string
+		var solution mfp.Distance
+		var err error
 
 		// print longest path
 		if longestPath {
 			grid, _ := builder.BuildGridWithDistance()
-			name, solution, err := handleLongestPath(grid, handleAlgorithms(cmd, args, grid))
+			name, err = handleAlgorithms(cmd, args, grid)
+			name, solution, err = handleLongestPath(grid, name)
 			if err != nil {
 				cmd.Println(err)
 				os.Exit(-1)
@@ -32,7 +37,8 @@ var printCmd = &cobra.Command{
 		} else if len(startCell) > 0 && len(endCell) > 0 {
 			// solve for start & end
 			grid, _ := builder.BuildGridWithDistance()
-			name, solution, err := handlePathSolve(grid, handleAlgorithms(cmd, args, grid))
+			name, err = handleAlgorithms(cmd, args, grid)
+			name, solution, err = handlePathSolve(grid, name)
 			if err != nil {
 				cmd.Println(err)
 				os.Exit(-1)
@@ -50,7 +56,11 @@ var printCmd = &cobra.Command{
 		} else {
 			// print normal maze
 			grid, _ := builder.BuildASCIIGrid()
-			name := handleAlgorithms(cmd, args, grid)
+			name, err = handleAlgorithms(cmd, args, grid)
+			if err != nil {
+				cmd.PrintErrln(err)
+				os.Exit(-1)
+			}
 			fmt.Println(name, "\n", grid)
 		}
 	},
@@ -67,10 +77,14 @@ var distancesCmd = &cobra.Command{
 		builder := grids.NewBuilder(rows, columns)
 
 		grid, _ := builder.BuildGridWithDistance()
-		name := handleAlgorithms(cmd, args, grid)
+		name, err := handleAlgorithms(cmd, args, grid)
 		start, _ := grid.CellAt(0, 0)
 		distances := start.Distances()
 		grid.Distances = distances
+		if err != nil {
+			cmd.PrintErrln(err)
+			os.Exit(-1)
+		}
 
 		fmt.Println(name, "\n", grid)
 	},

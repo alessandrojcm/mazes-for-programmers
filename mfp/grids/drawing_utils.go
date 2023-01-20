@@ -86,6 +86,12 @@ func prepareRenderContext(columns, rows, thickness, cellSize int) (target rl.Ren
 	if thickness <= 0 {
 		thickness = 1
 	}
+	// Let's use a hidden OpenGL context to
+	// draw the image since the texture
+	// drawing functions work better
+	rl.SetConfigFlags(rl.FlagWindowHidden)
+	rl.InitWindow(0, 0, "")
+	rl.SetTargetFPS(60)
 
 	// Making sure the render resolution does not overflow the monitor
 	width, height := cellSize*columns, cellSize*rows
@@ -95,13 +101,8 @@ func prepareRenderContext(columns, rows, thickness, cellSize int) (target rl.Ren
 	if height > rl.GetMonitorHeight(rl.GetCurrentMonitor()) {
 		height = rl.GetMonitorHeight(rl.GetCurrentMonitor())
 	}
+	rl.SetWindowSize(width, height)
 
-	// Let's use a hidden OpenGL context to
-	// draw the image since the texture
-	// drawing functions work better
-	rl.SetConfigFlags(rl.FlagWindowHidden)
-	rl.InitWindow(int32(width), int32(height), "")
-	rl.SetTargetFPS(60)
 	target = rl.LoadRenderTexture(int32(width), int32(height))
 
 	defer rl.EndTextureMode()

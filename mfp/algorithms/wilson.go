@@ -30,10 +30,11 @@ func filterCell(a []*mfp.Cell, target *mfp.Cell) []*mfp.Cell {
 	return a[:n]
 }
 
-func Wilson(grid grids.BaseGridHandler) {
+func Wilson(grid grids.BaseGridHandler, cutOffPoint int) {
 	log.Printf("starting wilson run for %dx%d grid", grid.Rows(), grid.Columns())
 	defer mfp.TimeTrack(time.Now(), "wilson run")
 	var unvisited []*mfp.Cell
+	count := 0
 	for cell := range grid.EachCell() {
 		unvisited = append(unvisited, cell)
 	}
@@ -41,6 +42,9 @@ func Wilson(grid grids.BaseGridHandler) {
 	// removing from array
 	filterCell(unvisited, first)
 	for len(unvisited) > 0 {
+		if cutOffPoint != -1 && count >= cutOffPoint {
+			return
+		}
 		cell := arrutil.GetRandomOne(unvisited)
 		path := []*mfp.Cell{cell}
 
@@ -54,6 +58,7 @@ func Wilson(grid grids.BaseGridHandler) {
 			}
 
 			for i := 0; i < len(path)-1; i++ {
+				count++
 				path[i].Link(path[i+1], true)
 				unvisited = filterCell(unvisited, path[i])
 			}

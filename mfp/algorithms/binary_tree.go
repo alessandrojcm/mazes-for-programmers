@@ -13,11 +13,15 @@ const NorthAndWest = "northwest"
 const SouthAndEast = "southeast"
 
 // BinaryTree -- a binary tree maze implementation, with bias to change the texture of the maze
-func BinaryTree(grid grids.BaseGridHandler, bias string) {
+func BinaryTree(grid grids.BaseGridHandler, bias string, cutOffPoint int) {
+	defer mfp.TimeTrack(time.Now(), "binary tree run")
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	log.Printf("starting binary tree run for %dx%d grid", grid.Rows(), grid.Columns())
-	defer mfp.TimeTrack(time.Now(), "binary tree run")
+	count := 0
 	for cell := range grid.EachCell() {
+		if cutOffPoint != -1 && count >= cutOffPoint {
+			return
+		}
 		neighbors := make([]*mfp.Cell, 0, grid.Size())
 		switch bias {
 		case SouthAndWest:
@@ -55,6 +59,7 @@ func BinaryTree(grid grids.BaseGridHandler, bias string) {
 			randomNeighbor = r.Intn(len(neighbors))
 		}
 		if len(neighbors) > 0 && neighbors[randomNeighbor] != nil {
+			count++
 			err := cell.Link(neighbors[randomNeighbor], true)
 			if err != nil {
 				panic(err)

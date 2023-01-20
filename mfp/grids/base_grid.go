@@ -2,8 +2,8 @@ package grids
 
 import (
 	"errors"
+	"github.com/gookit/goutil/arrutil"
 	"log"
-	"math/rand"
 	"mazes-for-programmers/mfp"
 	"time"
 )
@@ -104,10 +104,7 @@ func (g *BaseGrid) ConfigureCells() error {
 }
 
 func (g *BaseGrid) RandomCell() (*mfp.Cell, error) {
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	row, column := r.Intn(g.rows), r.Intn(g.columns)
-
-	return g.cells[row][column], nil
+	return arrutil.GetRandomOne(arrutil.GetRandomOne[[]*mfp.Cell](g.cells)), nil
 }
 
 func (g *BaseGrid) Size() int {
