@@ -8,6 +8,8 @@ github.com/gen2brain/raylib-go/raylib v0.0.0-20221127193218-23cae4c96cbe h1:Jfpk
 github.com/gen2brain/raylib-go/raylib v0.0.0-20221127193218-23cae4c96cbe/go.mod h1:+NbsqGlEQqGqrsgJFF5Yj2dkvn0ML2SQb8RqM2hJsPU=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20221204123137-d6b1dea578e9 h1:AOUfofrygUgRe5Ih6a9VTQjU2I+9eesX9Cx9muo4BR8=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20221204123137-d6b1dea578e9/go.mod h1:+NbsqGlEQqGqrsgJFF5Yj2dkvn0ML2SQb8RqM2hJsPU=
+github.com/gen2brain/raylib-go/raylib v0.0.0-20230119163414-8344ddbee9ac h1:GuJR5kafslaWo/EF18uR9VGSC7y651Y+8gdALKYElSU=
+github.com/gen2brain/raylib-go/raylib v0.0.0-20230119163414-8344ddbee9ac/go.mod h1:+NbsqGlEQqGqrsgJFF5Yj2dkvn0ML2SQb8RqM2hJsPU=
 github.com/gookit/goutil v0.6.1 h1:EsaMR1QWxg61R8oBW7sbSHUxQzMZUKTDUEAKpsHUXJI=
 github.com/gookit/goutil v0.6.1/go.mod h1:s2xa6+NP2nxI+h88TUAio7xROJzZaerEfkzJ0+lqvm4=
 github.com/inconshreveable/mousetrap v1.0.1 h1:U3uMjPSQEBMNp1lFxmllqCPM6P5u/Xq7Pgzkat/bFNc=
