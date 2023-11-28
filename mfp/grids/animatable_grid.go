@@ -26,7 +26,7 @@ func (g *AnimatableGrid) ShowAnimation(cellSize, thickness int) {
 	isFinished := false
 	hint := "Press R to restart"
 
-	// let's precompute all the cell's color's, and set aside the translucent ones in another array
+	// let's precompute all the cell's colours, and set aside the translucent ones in another array
 	for cell := range g.DistanceGrid.EachCell() {
 		c := cellColor{
 			cell:  cell,

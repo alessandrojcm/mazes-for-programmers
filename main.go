@@ -28,7 +28,7 @@ var rootCmd = &cobra.Command{
 			os.Setenv("DEBUG", "True")
 			log.SetFlags(log.Ldate)
 		} else {
-			rl.SetTraceLog(rl.LogNone)
+			rl.SetTraceLogLevel(rl.LogNone)
 			log.SetOutput(io.Discard)
 		}
 	},
@@ -38,6 +38,7 @@ var rootCmd = &cobra.Command{
 // TODO: print weights of the cells for the show command(s)
 // TODO: fix weight fot the ASCII version (it overflows the cells)
 // TODO: spread middle seems fishy, check it out
+// TODO: animate is flickering for some reason
 func main() {
 	// Raylib uses OpenGL and OpenGL expects every
 	// call to be made on a single thread

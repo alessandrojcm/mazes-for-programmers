@@ -2,6 +2,8 @@ github.com/cpuguy83/go-md2man/v2 v2.0.2/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46t
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/ebitengine/purego v0.6.0-alpha.2 h1:lYSvMtNBEjNGAzqPC5WP7bHUOxkFU3L+JZMdxK7krkw=
+github.com/ebitengine/purego v0.6.0-alpha.2/go.mod h1:ah1In8AOtksoNK6yk5z1HTJeUkC1Ez4Wk2idgGslMwQ=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20221105143954-3f14ff470c35 h1:U2vyrMeDEEX0eM3xVLwy/Yl6/WFB31z/3AlG1fGcYhI=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20221105143954-3f14ff470c35/go.mod h1:+NbsqGlEQqGqrsgJFF5Yj2dkvn0ML2SQb8RqM2hJsPU=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20221127193218-23cae4c96cbe h1:JfpkbAF39rb8IVyZ+VXiYpRRITi0Mhe/K5fP8y7tLGM=
@@ -10,6 +12,9 @@ github.com/gen2brain/raylib-go/raylib v0.0.0-20221204123137-d6b1dea578e9 h1:AOUf
 github.com/gen2brain/raylib-go/raylib v0.0.0-20221204123137-d6b1dea578e9/go.mod h1:+NbsqGlEQqGqrsgJFF5Yj2dkvn0ML2SQb8RqM2hJsPU=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20230119163414-8344ddbee9ac h1:GuJR5kafslaWo/EF18uR9VGSC7y651Y+8gdALKYElSU=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20230119163414-8344ddbee9ac/go.mod h1:+NbsqGlEQqGqrsgJFF5Yj2dkvn0ML2SQb8RqM2hJsPU=
+github.com/gen2brain/raylib-go/raylib v0.0.0-20231123174446-48309e2407b7 h1:qu+EOzSIbZHZdlahUAZRGAjyiSjzSNEnIiucIEHCKYU=
+github.com/gen2brain/raylib-go/raylib v0.0.0-20231123174446-48309e2407b7/go.mod h1:P/hDjVwz/9fhR0ww3+umzDpDA7Bf7Tce4xNChHIEFqE=
+github.com/gookit/color v1.5.2/go.mod h1:w8h4bGiHeeBpvQVePTutdbERIUf3oJE5lZ8HM0UgXyg=
 github.com/gookit/goutil v0.6.1 h1:EsaMR1QWxg61R8oBW7sbSHUxQzMZUKTDUEAKpsHUXJI=
 github.com/gookit/goutil v0.6.1/go.mod h1:s2xa6+NP2nxI+h88TUAio7xROJzZaerEfkzJ0+lqvm4=
 github.com/inconshreveable/mousetrap v1.0.1 h1:U3uMjPSQEBMNp1lFxmllqCPM6P5u/Xq7Pgzkat/bFNc=
@@ -28,8 +33,16 @@ github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
+github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778/go.mod h1:2MuV+tbUrU1zIOPMxZ5EncGwgmMJsa+9ucAQZXxsObs=
+golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4/go.mod h1:jJ57K6gSWd91VN4djpZkiMVwK6gcyfeH4XE8wZrZaV4=
+golang.org/x/sync v0.1.0/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
+golang.org/x/sys v0.0.0-20220829200755-d48e67d00261/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.15.0 h1:h48lPFYpsTvQJZF4EKyI4aLHaev3CxivZmv7yZig9pc=
+golang.org/x/sys v0.15.0/go.mod h1:/VUhepiaJMQUp4+oa/7Zr1D23ma6VTLIYjOOTFZPUcA=
+golang.org/x/term v0.0.0-20220722155259-a9ba230a4035/go.mod h1:jbD1KX2456YbFQfuXm/mYQcufACuNUgVhRMnK/tPxf8=
 golang.org/x/text v0.5.0 h1:OLmvp0KP+FVG99Ct/qFiL/Fhk4zp4QQnZ7b2U+5piUM=
 golang.org/x/text v0.5.0/go.mod h1:mrYo+phRRbMaCq/xk9113O4dZlRixOauAjOtrjsXDZ8=
+golang.org/x/tools v0.1.12/go.mod h1:hNGJHUnrk76NpqgfD5Aqm5Crs+Hm0VOH/i9J2+nxYbc=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
