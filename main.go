@@ -9,7 +9,6 @@ import (
 	"mazes-for-programmers/commands"
 	mfp2 "mazes-for-programmers/mfp/algorithms"
 	"os"
-	"runtime"
 )
 
 var debug bool
@@ -40,11 +39,6 @@ var rootCmd = &cobra.Command{
 // TODO: spread middle seems fishy, check it out
 // TODO: animate is flickering for some reason
 func main() {
-	// Raylib uses OpenGL and OpenGL expects every
-	// call to be made on a single thread
-	// so block the thread to avoid crashes
-	runtime.LockOSThread()
-
 	rootCmd.PersistentFlags().IntP("rows", "r", 4, "number or rows for the maze")
 	rootCmd.PersistentFlags().IntP("columns", "c", 4, "number of columns for the maze")
 	rootCmd.PersistentFlags().StringP("bias", "b", "", "set the bias for the algorithm, options are: "+mfp2.SouthAndWest+", "+

@@ -17,9 +17,9 @@ func HuntAndKill(grid grids.BaseGridHandler, cutOffPoint int) {
 		if cutOffPoint != -1 && count >= cutOffPoint {
 			return
 		}
-		unvisitedNeighbors := arrutil.TakeWhile(current.Neighbors(), func(a any) bool {
-			return len(a.(*mfp.Cell).Links()) == 0
-		}).([]*mfp.Cell)
+		unvisitedNeighbors := arrutil.TakeWhile(current.Neighbors(), func(a *mfp.Cell) bool {
+			return len(a.Links()) == 0
+		})
 
 		if len(unvisitedNeighbors) > 0 {
 			neighbor := arrutil.GetRandomOne[*mfp.Cell](unvisitedNeighbors)
@@ -28,14 +28,14 @@ func HuntAndKill(grid grids.BaseGridHandler, cutOffPoint int) {
 		} else {
 			current = nil
 			for cell := range grid.EachCell() {
-				visitedNeighbors := arrutil.TakeWhile(cell.Neighbors(), func(a any) bool {
-					for _, link := range a.(*mfp.Cell).Links() {
+				visitedNeighbors := arrutil.TakeWhile(cell.Neighbors(), func(a *mfp.Cell) bool {
+					for _, link := range a.Links() {
 						if link != nil {
 							return true
 						}
 					}
 					return false
-				}).([]*mfp.Cell)
+				})
 				if len(cell.Links()) == 0 && len(visitedNeighbors) > 0 {
 					count++
 					current = cell
