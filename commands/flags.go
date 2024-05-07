@@ -10,7 +10,7 @@ type colorFlag rl.Color
 
 var cellSizes, thickness int
 var startCell, endCell string
-var longestPath, spreadMiddle bool
+var longestPath, spreadMiddle, printWeights bool
 
 var backgroundCol = colorFlag(rl.Green)
 
@@ -46,8 +46,9 @@ func (c *colorFlag) Type() string {
 // addRendering-flags -- helper function to add all the flags for the "show" subcommand
 func addRenderingFlags(cmd *cobra.Command) {
 	cmd.Flags().IntVarP(&cellSizes, "cellsize", "s", 60, "sets the size of the cells")
-	cmd.Flags().IntVarP(&thickness, "thickness", "w", 1, "sets the thickness of the walls for the exported images")
+	cmd.Flags().IntVarP(&thickness, "thickness", "t", 1, "sets the thickness of the walls for the exported images")
 	cmd.Flags().VarP(&backgroundCol, "background-color", "l", "Set the background color to draw the distance grid with; options: red, green, blue and random.")
+	cmd.Flags().BoolVarP(&printWeights, "print-weights", "w", false,"Print the weights calculated by the solving algorithm.")
 }
 
 // addSolvingFlags -- helper function to add all the flags common to finding a solution for the maze

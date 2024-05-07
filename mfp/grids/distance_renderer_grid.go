@@ -1,6 +1,7 @@
 package grids
 
 import (
+	"fmt"
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"image/color"
 	"log"
@@ -36,7 +37,7 @@ func (g *DistanceRenderGrid) BackgroundColorForCell(cell *mfp.Cell) color.RGBA {
 	return rl.Fade(bgColor, intensity)
 }
 
-func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int) *rl.RenderTexture2D {
+func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int, printWeights bool) *rl.RenderTexture2D {
 	log.Printf("starting to render distenced grid with %dx%d dimention", g.rows, g.columns)
 	defer mfp.TimeTrack(time.Now(), "grid rendering")
 	offset := thickness / 2
@@ -47,11 +48,27 @@ func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int) *rl.RenderTextur
 	defer rl.EndDrawing()
 	defer rl.EndTextureMode()
 
+	var cells []struct {
+		x      int32
+		y      int32
+		weight int
+		color  rl.Color
+	}
+
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.White)
 	for cell := range g.DistanceGrid.EachCell() {
 		x, y := int32((cell.Column*cellSize)+offset), int32((cell.Row*cellSize)+offset)
-		rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), g.BackgroundColorForCell(cell))
+		c := g.BackgroundColorForCell(cell)
+		rl.DrawRectangle(x, y, int32(cellSize-offset), int32(cellSize-offset), c)
+		if printWeights {
+			cells = append(cells, struct {
+				x      int32
+				y      int32
+				weight int
+				color  rl.Color
+			}{x: x, y: y, color: c, weight: g.Distances.Cells[cell]})
+		}
 	}
 
 	// FLIP THE TEXTURE!!
@@ -62,5 +79,37 @@ func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int) *rl.RenderTextur
 		rl.NewVector2(0, 0),
 		rl.Black,
 	)
+
+	rl.EndDrawing()
+	rl.EndTextureMode()
+	if !printWeights {
+		return &target
+	}
+	// The main texture is horizontally flipped since OpenGL takes the bottom left corner as the origin.
+	// Hence, if we draw the text at once it will also be inverted.
+	// To get aroung this, we draw the lines FIRST and then we draw the text, un flipped, in individual
+	// textures that will be added on top of the main texture.
+	for _, c := range cells {
+		if c.weight == 0 {
+			continue
+		}
+		dimension := int32(cellSize - 10)
+		weightCell := rl.LoadRenderTexture(dimension, dimension)
+		rl.BeginTextureMode(weightCell)
+		rl.BeginDrawing()
+//		rl.ClearBackground(c.color)
+		rl.DrawText(fmt.Sprintf("%d", c.weight), int32(offset), int32(offset), int32(cellSize/2), rl.Black)
+		rl.EndDrawing()
+		rl.EndTextureMode()
+
+		rl.BeginTextureMode(target)
+		rl.BeginDrawing()
+		rl.DrawTextureRec(weightCell.Texture, rl.NewRectangle(
+			0, 0, float32(weightCell.Texture.Width), float32(weightCell.Texture.Height)),
+			rl.NewVector2(float32(c.x+3), float32(c.y+4)),
+			rl.White)
+		rl.EndDrawing()
+		rl.EndTextureMode()
+	}
 	return &target
 }

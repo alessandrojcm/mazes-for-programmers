@@ -7,8 +7,9 @@ import (
 	"io"
 	"log"
 	"mazes-for-programmers/commands"
-	mfp2 "mazes-for-programmers/mfp/algorithms"
+	mfp "mazes-for-programmers/mfp/algorithms"
 	"os"
+	"strings"
 )
 
 var debug bool
@@ -34,16 +35,16 @@ var rootCmd = &cobra.Command{
 	Aliases: []string{"mfp"},
 }
 
-// TODO: print weights of the cells for the show command(s)
 // TODO: fix weight fot the ASCII version (it overflows the cells)
 // TODO: spread middle seems fishy, check it out
 // TODO: animate is flickering for some reason
+// TODO: coloring does not work without longest-path?
 func main() {
 	rootCmd.PersistentFlags().IntP("rows", "r", 4, "number or rows for the maze")
 	rootCmd.PersistentFlags().IntP("columns", "c", 4, "number of columns for the maze")
-	rootCmd.PersistentFlags().StringP("bias", "b", "", "set the bias for the algorithm, options are: "+mfp2.SouthAndWest+", "+
-		", "+mfp2.NorthAndWest+
-		mfp2.SouthAndEast)
+	rootCmd.PersistentFlags().StringP("bias", "b", "", fmt.Sprintf("set the bias for the algorithm, options are: %s", strings.Join([]string{mfp.SouthAndWest,
+		mfp.NorthAndWest,
+		mfp.SouthAndEast}, ", ")))
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "show debug grid")
 	commands.InitPrint(rootCmd)
 	commands.InitShow(rootCmd)

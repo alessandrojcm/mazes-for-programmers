@@ -2,6 +2,7 @@ package mfp
 
 type Distance struct {
 	root  *Cell
+	// Map [Cell reference] to the weight (distance value) of the cell
 	Cells map[*Cell]int
 }
 

@@ -17,7 +17,7 @@ type AnimatableGridHandler interface {
 	ShowAnimation(cellSize, thickness int)
 }
 
-func (g *AnimatableGrid) ShowAnimation(cellSize, thickness int) {
+func (g *AnimatableGrid) ShowAnimation(cellSize, thickness int, printWeights bool) {
 	log.Printf("starting to animate distanced grid with %dx%d dimention", g.rows, g.columns)
 	defer mfp.TimeTrack(time.Now(), "animatable grid rendering")
 

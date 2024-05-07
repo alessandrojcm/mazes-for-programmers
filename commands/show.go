@@ -35,7 +35,7 @@ var showCmd = &cobra.Command{
 			}
 			grid.Distances = solution
 			// create texture
-			target = grid.ToTexture(cellSizes, thickness)
+			target = grid.ToTexture(cellSizes, thickness, printWeights)
 		} else if len(startCell) > 0 && len(endCell) > 0 {
 			// solve for start & end
 			grid, _ := builder.BuildGridWithDistanceRenderer(rl.Color(backgroundCol))
@@ -48,7 +48,7 @@ var showCmd = &cobra.Command{
 			}
 			grid.Distances = solution
 			// create texture
-			target = grid.ToTexture(cellSizes, thickness)
+			target = grid.ToTexture(cellSizes, thickness, printWeights)
 		} else if spreadMiddle {
 			grid, _ := builder.BuildGridWithDistanceRenderer(rl.Color(backgroundCol))
 			_, err = handleAlgorithms(cmd, args, grid)
@@ -58,7 +58,7 @@ var showCmd = &cobra.Command{
 				os.Exit(-1)
 			}
 			grid.Distances = middle.Distances()
-			target = grid.ToTexture(cellSizes, thickness)
+			target = grid.ToTexture(cellSizes, thickness, printWeights)
 		} else {
 			// Normal grid
 			grid, _ := builder.BuildGridLineRenderer()
@@ -145,7 +145,7 @@ var animateCmd = &cobra.Command{
 			renderer.ShowAnimation(cellSizes, thickness)
 		} else {
 			renderer, _ := builder.BuildAnimatableGrid(rl.Color(backgroundCol))
-			renderer.ShowAnimation(cellSizes, thickness)
+			renderer.ShowAnimation(cellSizes, thickness, printWeights)
 		}
 	},
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
@@ -162,4 +162,6 @@ func InitShow(cmd *cobra.Command) {
 
 	cmd.AddCommand(showCmd)
 	cmd.AddCommand(animateCmd)
+	animateCmd.MarkFlagsOneRequired("print-weights", "solve-from", "solve-to", "longest-path")
+	showCmd.MarkFlagsOneRequired("print-weights", "solve-from", "solve-to", "longest-path")
 }

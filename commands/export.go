@@ -35,7 +35,7 @@ var exportCmd = &cobra.Command{
 			}
 			grid.Distances = solution
 			// create texture
-			target = grid.ToTexture(cellSizes, thickness)
+			target = grid.ToTexture(cellSizes, thickness, printWeights)
 		} else if len(startCell) > 0 && len(endCell) > 0 {
 			// grid with path solving
 			//  for start & end
@@ -50,7 +50,7 @@ var exportCmd = &cobra.Command{
 			}
 			grid.Distances = solution
 			// create texture
-			target = grid.ToTexture(cellSizes, thickness)
+			target = grid.ToTexture(cellSizes, thickness, printWeights)
 		} else {
 			// Normal grid
 			var err error
@@ -76,4 +76,5 @@ func InitExport(cmd *cobra.Command) {
 	addRenderingFlags(exportCmd)
 	addSolvingFlags(exportCmd)
 	cmd.AddCommand(exportCmd)
+	exportCmd.MarkFlagsOneRequired("print-weights", "solve-from", "solve-to", "longest-path")
 }

@@ -101,6 +101,7 @@ func prepareRenderContext(columns, rows, thickness, cellSize int) (target rl.Ren
 	if height > rl.GetMonitorHeight(rl.GetCurrentMonitor()) {
 		height = rl.GetMonitorHeight(rl.GetCurrentMonitor())
 	}
+	rl.SetWindowPosition(30, 30)
 	rl.SetWindowSize(width, height)
 
 	target = rl.LoadRenderTexture(int32(width), int32(height))
