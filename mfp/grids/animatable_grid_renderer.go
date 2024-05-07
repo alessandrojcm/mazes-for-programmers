@@ -48,35 +48,50 @@ func (g *AnimatableGrid) ShowAnimation(cellSize, thickness int, printWeights boo
 
 	lines := generateMazeWallsTexture(g.EachCell(), cellSize, thickness, offset, target.Texture.Width, target.Texture.Height, rl.Black)
 	timer := float32(0.0)
+	canvas := rl.LoadRenderTexture(lines.Width, lines.Height)
+	// Create a frame buffer to draw changes to
+	rl.BeginTextureMode(canvas)
+	prepareCanvas(cells, cellSize, offset, lines, g.backgroundColor)
+	rl.EndTextureMode()
 
 	// keep the cell we're currently drawing
 	actualCell := 0
-	prepareCanvas(cells, cellSize, offset, lines, g.backgroundColor)
+	// Draw the canvas
+	rl.BeginDrawing()
+	drawHorizontallyFlipped(canvas.Texture, rl.White)
+	rl.EndDrawing()
 	// now animate the cells per frame
 	for !rl.WindowShouldClose() {
 		if isFinished && rl.IsKeyPressed(rl.KeyR) {
+			rl.BeginTextureMode(canvas)
 			prepareCanvas(cells, cellSize, offset, lines, g.backgroundColor)
+			rl.EndTextureMode()
 			actualCell = 0
 			isFinished = false
 		}
 		// We've finished, don't do anything
 		if isFinished {
-			rl.BeginDrawing()
+			rl.BeginTextureMode(canvas)
 			rl.DrawText(hint, 5, target.Texture.Height-29, 24, rl.Black)
-			rl.EndDrawing()
-			continue
+			rl.EndTextureMode()
 		}
 		timer += rl.GetFrameTime()
 		if timer < 0.05 {
 			continue
 		}
 		timer = 0.0
+		if !isFinished {
+			rl.BeginTextureMode(canvas)
+			drawCell(translucentCells[actualCell].cell, cellSize, offset, translucentCells[actualCell].color)
+			actualCell++
+			drawMazeLines(lines)
+			rl.EndTextureMode()
+			isFinished = actualCell > actualCell%len(translucentCells)
+		}
+
+		// Swap the back buffer with the front buffer
 		rl.BeginDrawing()
-		drawCell(translucentCells[actualCell].cell, cellSize, offset, translucentCells[actualCell].color)
-		actualCell++
-		drawMazeLines(lines)
+		drawHorizontallyFlipped(canvas.Texture, rl.White)
 		rl.EndDrawing()
-		isFinished = actualCell > actualCell%len(translucentCells)
 	}
-	rl.EndTextureMode()
 }

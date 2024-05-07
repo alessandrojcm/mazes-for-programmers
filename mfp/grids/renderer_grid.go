@@ -39,14 +39,7 @@ func (g *RendererGrid) ToTexture(cellSize, thickness int) *rl.RenderTexture2D {
 	defer rl.EndTextureMode()
 	rl.ClearBackground(background)
 	rl.BeginDrawing()
-	// FLIP THE TEXTURE!!
-	rl.DrawTextureRec(
-		lines,
-		rl.NewRectangle(
-			0, 0, float32(lines.Width), float32(lines.Height*-1)),
-		rl.NewVector2(0, 0),
-		rl.Black,
-	)
+	drawHorizontallyFlipped(lines, rl.Black)
 
 	return &target
 }

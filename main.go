@@ -37,8 +37,6 @@ var rootCmd = &cobra.Command{
 
 // TODO: fix weight fot the ASCII version (it overflows the cells)
 // TODO: spread middle seems fishy, check it out
-// TODO: animate is flickering for some reason
-// TODO: coloring does not work without longest-path?
 func main() {
 	rootCmd.PersistentFlags().IntP("rows", "r", 4, "number or rows for the maze")
 	rootCmd.PersistentFlags().IntP("columns", "c", 4, "number of columns for the maze")

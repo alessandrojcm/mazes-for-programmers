@@ -14,14 +14,7 @@ type cellColor struct {
 }
 
 func drawMazeLines(lines rl.Texture2D) {
-	// FLIP THE TEXTURE!!
-	rl.DrawTextureRec(
-		lines,
-		rl.NewRectangle(
-			0, 0, float32(lines.Width), float32(lines.Height*-1)),
-		rl.NewVector2(0, 0),
-		rl.Black,
-	)
+	drawHorizontallyFlipped(lines, rl.Black)
 }
 
 // prepareCanvas -- renders a slice of tiles given each tile has a bgColor
@@ -91,7 +84,7 @@ func prepareRenderContext(columns, rows, thickness, cellSize int) (target rl.Ren
 	// drawing functions work better
 	rl.SetConfigFlags(rl.FlagWindowHidden)
 	rl.InitWindow(0, 0, "")
-	rl.SetTargetFPS(60)
+	rl.SetTargetFPS(30)
 
 	// Making sure the render resolution does not overflow the monitor
 	width, height := cellSize*columns, cellSize*rows
@@ -121,4 +114,16 @@ func prepareRenderContext(columns, rows, thickness, cellSize int) (target rl.Ren
 		rl.EndDrawing()
 	}
 	return
+}
+
+// drawHorizontallyFlipped - Flips a texture horizontally
+func drawHorizontallyFlipped(texture rl.Texture2D, color rl.Color) {
+	// FLIP THE TEXTURE!!
+	rl.DrawTextureRec(
+		texture,
+		rl.NewRectangle(
+			0, 0, float32(texture.Width), float32(texture.Height*-1)),
+		rl.NewVector2(0, 0),
+		color,
+	)
 }

@@ -71,14 +71,7 @@ func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int, printWeights boo
 		}
 	}
 
-	// FLIP THE TEXTURE!!
-	rl.DrawTextureRec(
-		lines,
-		rl.NewRectangle(
-			0, 0, float32(lines.Width), float32(lines.Height*-1)),
-		rl.NewVector2(0, 0),
-		rl.Black,
-	)
+	drawHorizontallyFlipped(lines, rl.Black)
 
 	rl.EndDrawing()
 	rl.EndTextureMode()
@@ -97,17 +90,13 @@ func (g *DistanceRenderGrid) ToTexture(cellSize, thickness int, printWeights boo
 		weightCell := rl.LoadRenderTexture(dimension, dimension)
 		rl.BeginTextureMode(weightCell)
 		rl.BeginDrawing()
-//		rl.ClearBackground(c.color)
 		rl.DrawText(fmt.Sprintf("%d", c.weight), int32(offset), int32(offset), int32(cellSize/2), rl.Black)
 		rl.EndDrawing()
 		rl.EndTextureMode()
 
 		rl.BeginTextureMode(target)
 		rl.BeginDrawing()
-		rl.DrawTextureRec(weightCell.Texture, rl.NewRectangle(
-			0, 0, float32(weightCell.Texture.Width), float32(weightCell.Texture.Height)),
-			rl.NewVector2(float32(c.x+3), float32(c.y+4)),
-			rl.White)
+		drawHorizontallyFlipped(weightCell.Texture, rl.White)
 		rl.EndDrawing()
 		rl.EndTextureMode()
 	}
