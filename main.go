@@ -42,6 +42,7 @@ var rootCmd = &cobra.Command{
 
 // TODO: fix weight fot the ASCII version (it overflows the cells)
 // TODO: spread middle seems fishy, check it out
+// TODO: prettify text?
 func main() {
 	rootCmd.PersistentFlags().IntP("rows", "r", 4, "number or rows for the maze")
 	rootCmd.PersistentFlags().IntP("columns", "c", 4, "number of columns for the maze")
@@ -51,6 +52,8 @@ func main() {
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "show debug grid")
 	commands.InitShow(rootCmd)
 	commands.InitExport(rootCmd)
+	commands.InitPrint(rootCmd)
+	commands.InitDeadEnds(rootCmd)
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

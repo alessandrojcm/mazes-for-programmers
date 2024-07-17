@@ -26,6 +26,7 @@ type BaseGridHandler interface {
 	Empty() bool
 	Rows() int
 	Columns() int
+	DeadCells() []*mfp.Cell
 }
 
 func (g *BaseGrid) Rows() int {
@@ -138,4 +139,15 @@ func (g *BaseGrid) EachCell() chan *mfp.Cell {
 	}()
 
 	return cellChan
+}
+
+func (g* BaseGrid) DeadCells() []*mfp.Cell  {
+    var deadCells []*mfp.Cell
+	for cell := range g.EachCell() {
+		if len(cell.Links()) == 1 {
+			deadCells = append(deadCells, cell)
+		}
+	}
+
+	return deadCells
 }

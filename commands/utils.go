@@ -40,13 +40,13 @@ func handleAlgorithms(cmd *cobra.Command, args []string, grid grids.BaseGridHand
 			name = fmt.Sprintf("%s %vx%v maze with bias %s", "sidewinder", rows, columns, bias)
 			algorithms.SideWinder(grid, cutOffPoint)
 		case "aldous-broder":
-			name = fmt.Sprintf("#{aldous-broder} #{row}x#[columns} maze")
+			name = fmt.Sprintf("#{aldous-broder} #{%v}x#[%v} maze", rows, columns)
 			algorithms.AldousBroder(grid, cutOffPoint)
 		case "wilson":
-			name = fmt.Sprintf("#{wilson} #{row}x#[columns} maze")
+			name = fmt.Sprintf("#{wilson} #{%v}x#[%v} maze", rows, columns)
 			algorithms.Wilson(grid, cutOffPoint)
 		case "hunt-and-kill":
-			name = fmt.Sprintf("#{hunt-and-kill} #{row}x#[columns} maze")
+			name = fmt.Sprintf("#{hunt-and-kill} #{%v}x#[%v} maze", rows, columns)
 			algorithms.HuntAndKill(grid, cutOffPoint)
 		}
 	}
