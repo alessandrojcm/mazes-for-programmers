@@ -32,6 +32,11 @@ var rootCmd = &cobra.Command{
 			log.SetOutput(io.Discard)
 		}
 	},
+	Run: func(cmd *cobra.Command, args []string) {
+        cmd.Println("Mazes for Programmers (mfp) is a Go implementation of the Mazes For Programmers book by Jamis buck.\n")
+		cmd.Println("The maze supported maze algorithms are:\n1) Aldous Broder\n2) Binary Tree\n3) Hunt & kill\n4) Sidewinder\n5) Wilson")
+    },
+
 	Aliases: []string{"mfp"},
 }
 
@@ -44,7 +49,6 @@ func main() {
 		mfp.NorthAndWest,
 		mfp.SouthAndEast}, ", ")))
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "show debug grid")
-	commands.InitPrint(rootCmd)
 	commands.InitShow(rootCmd)
 	commands.InitExport(rootCmd)
 	if err := rootCmd.Execute(); err != nil {

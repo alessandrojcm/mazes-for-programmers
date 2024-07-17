@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-// showCmd -- sub command cli
+// showCmd -- sub command cli to render the maze to an image
 var showCmd = &cobra.Command{
 	Use:       "show",
 	Short:     "Renders the maze to a window",
