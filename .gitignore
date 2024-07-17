@@ -121,3 +121,4 @@ fabric.properties
 *.png
 ./*.dll
 ./*.exe
+.fleet/*

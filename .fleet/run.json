@@ -1,0 +1,13 @@
+{
+    "configurations": [
+        
+        {
+            "name": "go build mazes-for-programmers (1)",
+            "type": "go",
+            "workingDir": "C:\\Users\\CuppariA\\repos\\mazes-for-programmers",
+            "goExecPath": "C:\\Program Files\\Go\\bin\\go.exe",
+            "buildParams": ["mazes-for-programmers"],
+            "runParams": ["show", "mixup", "--longest-path", "-r", "12", "-c", "12"],
+        }
+    ]
+}

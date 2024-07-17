@@ -34,7 +34,7 @@ var rootCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
         cmd.Println("Mazes for Programmers (mfp) is a Go implementation of the Mazes For Programmers book by Jamis buck.\n")
-		cmd.Println("The maze supported maze algorithms are:\n1) Aldous Broder\n2) Binary Tree\n3) Hunt & kill\n4) Sidewinder\n5) Wilson")
+		cmd.Println("The maze supported maze algorithms are:\n1) Aldous Broder\n2) Binary Tree\n3) Hunt & kill\n4) Sidewinder\n5) Wilson\nYou can also use mixup followed by two or more algorithms to combine them.")
     },
 
 	Aliases: []string{"mfp"},

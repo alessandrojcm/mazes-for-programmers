@@ -57,7 +57,7 @@ func handleAlgorithms(cmd *cobra.Command, args []string, grid grids.BaseGridHand
 	}
 
 	algs := args[1:]
-	if len(algs) == 0 {
+	if len(algs) < 2 {
 		return name, errors.New("no algorithms provided to mix up")
 	}
 	// for some reason, Aldous-Broder gets stuck if not used

@@ -27,6 +27,10 @@ var showCmd = &cobra.Command{
 		if longestPath {
 			grid, _ := builder.BuildGridWithDistanceRenderer(rl.Color(backgroundCol))
 			name, err = handleAlgorithms(cmd, args, grid)
+			if err != nil {
+				cmd.Println(err)
+				os.Exit(-1)
+			}
 			n, solution, err = handleLongestPath(grid, name)
 			name = n
 			if err != nil {
